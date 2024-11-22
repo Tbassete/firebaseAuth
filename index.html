@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>TodoList</title>
   <link rel="shortcut icon" href="img/todoListFavicon.png" type="image/x-icon">
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
+  <div id="loading">
+    <img src="img/loading.gif" alt="carregando">
+  </div>
   <div id="app">
     <!--Logotipo do TodoList-->
     <div class="center">
       <img src="img/todoList.png">
     </div>
-
+        <!-- feedback de carregamento -->
+      
     <!--Conteúdo destinado para usuários não autenticados-->
     <div id="auth" class="center">
       <!--Formulário de autenticação-->
@@ -24,6 +30,8 @@
 
         <label for="password">Senha: </label>
         <input type="password" placeholder="Senha" id="password">
+
+    
 
         <button type="submit" id="submitAuthForm">Acessar</button>
       </form>
@@ -41,8 +49,13 @@
       </p>
     </div>
   </div>
-  
+  <!-- recursos do firebase: import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"; -->
   <!--Nossa programação em JavaScript-->
+  <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-auth.js"></script>
+  <script src="js/firebase.js"></script>
   <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
 </body>
+
 </html>

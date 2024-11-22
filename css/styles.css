@@ -59,3 +59,13 @@ p {
 .alternative {
   background-color: #44c;
 }
+
+#loading{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  background-color: white;
+  width: 98%;
+  height: 98%;
+}
