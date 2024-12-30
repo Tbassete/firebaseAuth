@@ -36,6 +36,12 @@
         <button type="submit" id="submitAuthForm">Acessar</button>
       </form>
 
+        <!--opção de resetar a senha-->
+        <p id="passwordReset">
+          esqueceu a senha ?
+          <button onclick="sendPasswordResetEmail()" class="alternative">redefinir a senha</button>
+        </p>
+
       <!--Alternar o fomulário de autenticação para o cadastro de novas contas-->
       <p id="register">
         Não possui uma conta?
@@ -47,6 +53,39 @@
         Já possui uma conta?
         <button onclick="toggleToAccess()" class="alternative">Acesse a sua conta</button>
       </p>
+
+      <p>ou acesse usando: <br>
+      <img src="img/google.png" alt="logotipo do google" onclick="signInWithGoogle()"></p>
+    </div>
+
+    <!-- conteudo para usuarios authenticados -->
+
+    <div id="userContent" class="startHidden">
+      
+      <div id="user info">
+        <img id="userImg">
+        <p id="userName"></p>
+        <p id="userEmail"></p>
+        <p id="emailVerified"></p>
+        <div id="sendEmailVerificationDiv">
+          <button class="alternative" onclick="sendEmailVerification()">verificar email</button>
+        </div>
+      </div>
+      <button class="alternative" onclick="updateUserName()"> alterar nome</button>
+        <button class="alternative" onclick="signOut()"> sair</button>
+        <button class="danger" onclick="deleteUserAccount()"> excluir conta</button>
+
+        <hr>
+
+        <div class="center">
+          <!-- formulario de tarefas -->
+            <form id="todoForm">
+              <h3 id="todoForm"> adicionar tarefas</h3>
+              <label for="name">tarefa:</label>
+              <input type="text" id="name" placeholder="tarefa">
+              <button type="submit" id="submiTodoForm"> adicionar tarefa</button>
+            </form>
+        </div>
     </div>
   </div>
   <!-- recursos do firebase: import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"; -->

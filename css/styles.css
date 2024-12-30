@@ -69,3 +69,17 @@ p {
   width: 98%;
   height: 98%;
 }
+
+#auth img {
+  cursor: pointer;
+  margin: 4px;
+}
+
+#userImg{
+  height: 40px;
+  border-radius: 100%;
+}
+
+.danger{
+  background-color: red;
+}
