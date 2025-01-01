@@ -83,3 +83,23 @@ p {
 .danger{
   background-color: red;
 }
+
+ul{
+  list-style-type: none;
+  padding: 0px;
+
+}
+li{
+  padding: 8px;
+}
+li:hover{
+  background-color: #ddd;
+  border-radius:8px ;
+}
+
+.todoBtn{
+  float: right;
+  margin: 0 0 0 4px;
+  position: relative;
+  bottom: 3px;
+}

@@ -1,4 +1,3 @@
-// const { default: firebase } = require("firebase/compat/app")
 
 // Defindo referências para elementos da página
 var authForm = document.getElementById('authForm')
@@ -20,6 +19,12 @@ var passwordReset = document.getElementById('passwordReset')
 var userImg = document.getElementById('userImg')
 
 var userName = document.getElementById('userName')
+
+var todoForm = document.getElementById('todoForm')
+var todoCount = document.getElementById('todoCount')
+var ulTodoList = document.getElementById('ulTodoList')
+
+
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
@@ -68,6 +73,22 @@ function showUserContent(user){
   userName.innerHTML = user.displayName
   userEmail.innerHTML= user.email
   hideItem(auth)
+
+// exibe somente as tarefas de um usuario logado
+
+  // dbRefUsers.child(firebase.auth().currentUser.uid).on('value', function(dataSnapshot){
+  //   fillTodoList(dataSnapshot)
+  // })
+
+
+  // exibe a lista de tarefas de todos
+
+  dbRefUsers.on('value', function(dataSnapshot) {
+    fillTodoList(dataSnapshot);
+});
+
+
+
   showItem(userContent)
 }
 
@@ -100,3 +121,6 @@ function showError(prefix, error) {
 var actionCodeSettings = {
   url: 'https://todo-13563.firebaseapp.com'
 }
+
+var database = firebase.database()
+var dbRefUsers = database.ref('users')

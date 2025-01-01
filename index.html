@@ -76,14 +76,20 @@
         <button class="danger" onclick="deleteUserAccount()"> excluir conta</button>
 
         <hr>
+      <!-- exibir lista de tarefas -->
+       <div id="todoList">
+        <h3 id="todoCount">carregando tarefas</h3>
+        <ul id="ulTodoList"></ul>
+       </div>
 
+       <hr>
         <div class="center">
           <!-- formulario de tarefas -->
             <form id="todoForm">
               <h3 id="todoForm"> adicionar tarefas</h3>
               <label for="name">tarefa:</label>
               <input type="text" id="name" placeholder="tarefa">
-              <button type="submit" id="submiTodoForm"> adicionar tarefa</button>
+              <button type="submit" id="submitTodoForm" > adicionar tarefa</button>
             </form>
         </div>
     </div>
@@ -92,9 +98,11 @@
   <!--Nossa programação em JavaScript-->
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-database.js"></script>
   <script src="js/firebase.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/todo.js"></script>
 </body>
 
 </html>
