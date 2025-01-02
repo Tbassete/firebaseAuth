@@ -75,44 +75,83 @@ function showUserContent(user){
   userEmail.innerHTML= user.email
   hideItem(auth)
 
-// exibe somente as tarefas de um usuario logado
 
-  // dbRefUsers.child(firebase.auth().currentUser.uid).on('value', function(dataSnapshot){
-  //   fillTodoList(dataSnapshot)
-  // })
-
-
-  // exibe a lista de tarefas de todos
-
-//   dbRefUsers.on('value', function(dataSnapshot) {
-//     fillTodoList(dataSnapshot);
-// });
 
 getDefaultTodoList()
-search.onkeyup =function(){
-  if(search.value != ''){
-    // busca tarefas filtradas somente uma vez
-    dbRefUsers.child('name').orderByChild('name')
-    .startAt(search.value).endAt(search.value + '\uf8ff')
-    .once('value').then( function(dataSnapshot) {
-      fillTodoList(dataSnapshot);
-    });
-  }else{
-    getDefaultTodoList()
+
+
+// metodo feito pela udemy
+// search.onkeyup =function(){
+//   if(search.value != ''){
+//     // busca tarefas filtradas somente uma vez
+//     dbRefUsers.orderByChild('name')
+//     .startAt(search.value)
+//     .endAt(search.value + '\uf8ff')
+//     .once('value').then( function(dataSnapshot) {
+//       fillTodoList(dataSnapshot);
+//     });
+//   }else{
+//     getDefaultTodoList()
+//   }
+// }
+
+
+// metodo novo para mostrar todas as tarefas iterando por todos os usuarios
+search.onkeyup = function () {
+  if (search.value !== '') {
+    const searchValue = search.value.toLowerCase();
+    console.log('Pesquisa iniciada:', searchValue);
+
+    dbRefUsers.child('tasks')
+      .orderByChild('name') // Ordena as tarefas pelo campo 'name'
+      .startAt(searchValue) // Começa a partir do valor da pesquisa
+      .endAt(searchValue + '\uf8ff') // Termina até um valor muito alto para cobrir todas as possibilidades
+      .once('value')
+      .then(function (snapshot) {
+        console.log('Dados recebidos:', snapshot.val());
+
+        const filteredTasks = [];
+
+        // Itera sobre as chaves do objeto recebido do Firebase
+        snapshot.forEach(function (taskSnapshot) {
+          const task = taskSnapshot.val();
+          console.log('Tarefa encontrada:', task);
+
+          // Adiciona a chave à tarefa para poder usá-la na exclusão/edição
+          filteredTasks.push({ ...task, key: taskSnapshot.key });
+        });
+
+        console.log('Tarefas filtradas:', filteredTasks); // Verifique as tarefas filtradas
+        fillTodoList(filteredTasks); // Passe o array filtrado diretamente
+      })
+      .catch(function (error) {
+        console.error('Erro ao recuperar dados do Firebase:', error);
+      });
+  } else {
+    getDefaultTodoList(); // Retorna à lista padrão quando o campo de pesquisa estiver vazio
   }
-}
+};
 
   showItem(userContent)
 }
 
 // busca as tarefas em tempo real (listagem padrão)
-function getDefaultTodoList(){
+function getDefaultTodoList() {
+  dbRefUsers.child('tasks').orderByChild('name').on('value', function(dataSnapshot) {
+    // Cria um array de tarefas a partir do dataSnapshot
+    const tasks = [];
 
+    dataSnapshot.forEach(function(taskSnapshot) {
+      const task = taskSnapshot.val();
+      // Adiciona a chave à tarefa para poder usá-la na exclusão/edição
+      tasks.push({ ...task, key: taskSnapshot.key });
+    });
 
-  dbRefUsers.orderByChild('name').on('value', function(dataSnapshot) {
-    fillTodoList(dataSnapshot);
+    // Passa as tarefas para a função fillTodoList
+    fillTodoList(tasks);
   });
 }
+
 
 
 //mostra a tela de authentication
