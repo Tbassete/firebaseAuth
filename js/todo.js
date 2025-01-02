@@ -7,10 +7,12 @@ todoForm.onsubmit = function(event){
             name: todoForm.name.value
         }
         dbRefUsers.child(firebase.auth().currentUser.uid).push(data).then(function(){
-            console.log('tarefa '+ data.name+'adicionada com sucesso')
+            console.log('tarefa:'+ data.name+' adicionada com sucesso' )
         }).catch(function(error){
             console.log(error)
         })
+
+        todoForm.name.value = ''
     }else{
         alert('o nome da tarefa nao pode estar vazio')
     }
@@ -34,9 +36,15 @@ todoForm.onsubmit = function(event){
 // var liRemoveBtn = document.createElement('button')
 // liRemoveBtn.appendChild(document.createTextNode('excluir'))
 // liRemoveBtn.setAttribute('onclick','removeTodo(\"'+item.key+'\")')
-//     })
-//  liRemoveBtn.setAttribute('class', 'danger todoBtn')
+// liRemoveBtn.setAttribute('class', 'danger todoBtn')
 // li.appendChild(liRemoveBtn)
+
+// var liUpdateBtn = document.createElement('button')
+// liUpdateBtn.appendChild(document.createTextNode('editar'))
+// liUpdateBtn.setAttribute('onclick', 'updateTodo(\"'+item.key+'\")')
+// liUpdateBtn.setAttribute('class', 'alternative todoBtn')
+// li.appendChild(liUpdateBtn)
+//     })
 // }
 
 //exibe todas as tarefas.
@@ -60,6 +68,12 @@ function fillTodoList(dataSnapshot) {
             liRemoveBtn.setAttribute('onclick','removeTodo(\"'+item.key+'\")')
             liRemoveBtn.setAttribute('class', 'danger todoBtn')
             li.appendChild(liRemoveBtn)
+
+            var liUpdateBtn = document.createElement('button')
+            liUpdateBtn.appendChild(document.createTextNode('editar'))
+            liUpdateBtn.setAttribute('onclick', 'updateTodo(\"'+item.key+'\")')
+            liUpdateBtn.setAttribute('class', 'alternative todoBtn')
+            li.appendChild(liUpdateBtn)
         });
     });
 
@@ -110,4 +124,25 @@ function removeTodo(key) {
                 console.log(error);
             });
     }
+}
+
+// função para editar as tarefas
+
+function updateTodo (key){
+    var selectedItem = document.getElementsByTagName(key)
+    var newTodoName = prompt('escolha o novo nome para a tarefa', selectedItem.innerHTML)
+    if(newTodoName != ''){
+        var data ={
+            name: newTodoName
+        }
+
+        dbRefUsers.child(firebase.auth().currentUser.uid).child(key).update(data).then(function(){
+            console.log('tarefa atualizada com sucesso')
+        }).catch(function(error){
+            showError('falha ao atualizar a tarefa', error)
+        })
+    }else{
+        alert('o nome da tarefa nao pode estar vazio')
+    }
+
 }

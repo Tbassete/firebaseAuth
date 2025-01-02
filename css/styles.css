@@ -58,6 +58,7 @@ p {
 
 .alternative {
   background-color: #44c;
+  border-radius: 8px;
 }
 
 #loading{
@@ -98,6 +99,14 @@ li:hover{
 }
 
 .todoBtn{
+  float: right;
+  margin: 0 0 0 4px;
+  position: relative;
+  bottom: 3px;
+}
+
+.updateBtn{
+  color: #ddd;
   float: right;
   margin: 0 0 0 4px;
   position: relative;

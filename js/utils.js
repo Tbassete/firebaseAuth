@@ -24,6 +24,7 @@ var todoForm = document.getElementById('todoForm')
 var todoCount = document.getElementById('todoCount')
 var ulTodoList = document.getElementById('ulTodoList')
 
+var search = document.getElementById('search')
 
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
@@ -83,14 +84,36 @@ function showUserContent(user){
 
   // exibe a lista de tarefas de todos
 
-  dbRefUsers.on('value', function(dataSnapshot) {
-    fillTodoList(dataSnapshot);
-});
+//   dbRefUsers.on('value', function(dataSnapshot) {
+//     fillTodoList(dataSnapshot);
+// });
 
-
+getDefaultTodoList()
+search.onkeyup =function(){
+  if(search.value != ''){
+    // busca tarefas filtradas somente uma vez
+    dbRefUsers.child('name').orderByChild('name')
+    .startAt(search.value).endAt(search.value + '\uf8ff')
+    .once('value').then( function(dataSnapshot) {
+      fillTodoList(dataSnapshot);
+    });
+  }else{
+    getDefaultTodoList()
+  }
+}
 
   showItem(userContent)
 }
+
+// busca as tarefas em tempo real (listagem padrão)
+function getDefaultTodoList(){
+
+
+  dbRefUsers.orderByChild('name').on('value', function(dataSnapshot) {
+    fillTodoList(dataSnapshot);
+  });
+}
+
 
 //mostra a tela de authentication
 function showAuth(){
