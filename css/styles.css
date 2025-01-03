@@ -1,12 +1,15 @@
+/* #054166 azul mega */
+/* #a70335 vermelho mega */
 body {
   color: #444;
-  font-family: Tahoma;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   height: 96vh;
 }
 
 #app {
-  width: 512px;
+  min-width: 512px;
+  min-height: 400px;
   margin: auto;
   box-shadow: 4px 4px 20px #888;
   padding: 20px;
@@ -26,6 +29,19 @@ h3 {
   font-weight: normal;
 }
 
+#submitAuthForm{
+  width: 99%;
+  height: 4vh;
+  border-radius: 5px;
+}
+
+#authButton{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
 input {
   width: 80%;
   margin: 4px;
@@ -36,8 +52,13 @@ input {
   outline: none;
 }
 
+input:focus{
+  border: 1px solid #054166;
+  transition: 1s;
+}
+
 button {
-  background-color: #4c4;
+  background-color: #4294c7;
   font-size: 15px;
   color: white;
   padding: 4px;
@@ -57,18 +78,29 @@ p {
 }
 
 .alternative {
-  background-color: #44c;
-  border-radius: 8px;
+  padding: 3px 6px 3px 6px;
+  background-color: #054166;
+  border-radius: 5px;
 }
 
 #loading{
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
+  position: fixed;
   background-color: white;
-  width: 98%;
-  height: 98%;
+  width: 100vw;
+  height: 100vh;
+}
+
+#closeProfile{
+  background-color: #a70335;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  left: 36%;  
+  bottom: 57%;
 }
 
 #auth img {
@@ -76,13 +108,22 @@ p {
   margin: 4px;
 }
 
+#userInfoCss{
+  
+  display: flex;
+  flex-wrap: wrap;
+}
+
 #userImg{
-  height: 40px;
+  cursor: pointer;
+  height: 70px;
   border-radius: 100%;
+  position: relative;
+  left: 43%;
 }
 
 .danger{
-  background-color: red;
+  background-color: #a70335;
 }
 
 ul{

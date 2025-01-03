@@ -26,7 +26,8 @@ var ulTodoList = document.getElementById('ulTodoList')
 
 var search = document.getElementById('search')
 
-
+var userInfo = document.getElementById('userInfo')
+var todoList = document.getElementById('todoList')
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
   authForm.submitAuthForm.innerHTML = 'Cadastrar conta'
@@ -47,7 +48,7 @@ function toggleToAccess() {
 
 // Simpplifica a exibição de elementos da página
 function showItem(element) {
-  element.style.display = 'block'
+  element.style.display = 'initial'
 }
 
 // Simpplifica a remoção de elementos da página
@@ -176,6 +177,21 @@ function showError(prefix, error) {
       alert(prefix + ' ' + error.message);
       break;
   }
+}
+
+// esconde o perfil
+
+function closeProfile(){
+  hideItem(userInfo)
+  showItem(todoList)
+}
+
+
+// exibe o perfil
+
+function showProfile(){
+  showItem(userInfo)
+  hideItem(todoList)
 }
 
 //atributos extras de verificação de auth

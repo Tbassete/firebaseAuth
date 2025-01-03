@@ -9,13 +9,15 @@
 </head>
 
 <body>
+
   <div id="loading">
     <img src="img/loading.gif" alt="carregando">
   </div>
+
   <div id="app">
     <!--Logotipo do TodoList-->
     <div class="center">
-      <img src="img/todoList.png">
+      <img src="img/megateca.png">
     </div>
         <!-- feedback de carregamento -->
       
@@ -23,7 +25,7 @@
     <div id="auth" class="center">
       <!--Formulário de autenticação-->
       <form id="authForm">
-        <h3 id="authFormTitle">Acesse a sua conta para continuar</h3>
+        <h3 id="authFormTitle">Acesso ilimitado a biblioteca</h3>
 
         <label for="email">E-mail: </label>
         <input type="email" placeholder="E-mail" id="email">
@@ -31,20 +33,20 @@
         <label for="password">Senha: </label>
         <input type="password" placeholder="Senha" id="password">
 
-    
+
 
         <button type="submit" id="submitAuthForm">Acessar</button>
       </form>
-
+        <div id="authButton">
         <!--opção de resetar a senha-->
         <p id="passwordReset">
-          esqueceu a senha ?
-          <button onclick="sendPasswordResetEmail()" class="alternative">redefinir a senha</button>
+          
+          <button onclick="sendPasswordResetEmail()" class="alternative">Redefinir a senha</button>
         </p>
 
       <!--Alternar o fomulário de autenticação para o cadastro de novas contas-->
       <p id="register">
-        Não possui uma conta?
+        
         <button onclick="toggleToRegister()" class="alternative">Cadastrar uma nova conta</button>
       </p>
 
@@ -53,53 +55,65 @@
         Já possui uma conta?
         <button onclick="toggleToAccess()" class="alternative">Acesse a sua conta</button>
       </p>
+    </div>
+      <p>ou acesse usando: </p>
+        <img src="img/google.png" alt="logotipo do google" onclick="signInWithGoogle()">
+      
 
-      <p>ou acesse usando: <br>
-      <img src="img/google.png" alt="logotipo do google" onclick="signInWithGoogle()"></p>
+    
     </div>
 
     <!-- conteudo para usuarios authenticados -->
 
     <div id="userContent" class="startHidden">
-      
-      <div id="user info">
-        <img id="userImg">
+      <img id="userImg" onclick="showProfile()">
+
+      <div id="userInfo" class="startHidden" >
+
+        <div id="userInfoCss">
+        <button onclick="closeProfile()" id="closeProfile">x</button>
+        <img id="profilePic"> 
         <p id="userName"></p>
         <p id="userEmail"></p>
         <p id="emailVerified"></p>
         <div id="sendEmailVerificationDiv">
-          <button class="alternative" onclick="sendEmailVerification()">verificar email</button>
+          <button class="alternative" onclick="sendEmailVerification()">Verificar email</button>
         </div>
+        <button class="alternative" onclick="updateUserName()"> Alterar nome</button>
+        <button class="alternative" onclick="signOut()"> Sair</button>
+        <button class="danger" onclick="deleteUserAccount()"> Excluir conta</button>
       </div>
-      <button class="alternative" onclick="updateUserName()"> alterar nome</button>
-        <button class="alternative" onclick="signOut()"> sair</button>
-        <button class="danger" onclick="deleteUserAccount()"> excluir conta</button>
+
+      </div>
+
 
         <hr>
       <!-- exibir lista de tarefas -->
        <div id="todoList">
         <div class="center">
-          <label for="search">buscar:</label>
+          <label for="search">Buscar:</label>
           <input type="text" placeholder="buscar" id="search">
         </div>
-        <h3 id="todoCount">carregando tarefas</h3>
+        <h3 id="todoCount">Carregando livros</h3>
        
         <ul id="ulTodoList"></ul>
-       </div>
 
-       <hr>
+        <hr>
         <div class="center">
           <!-- formulario de tarefas -->
             <form id="todoForm">
-              <h3 id="todoForm"> adicionar tarefas</h3>
+              <h3 id="todoForm"> Doar um livro</h3>
               <label for="name">livro:</label>
-              <input type="text" id="name" placeholder="tarefa">
+              <input type="text" id="name" placeholder="Titulo">
               <br>
-              <label for="file">foto:</label>
+              <label for="file">Foto:</label>
               <input type="file" id="file" >
-              <button type="submit" id="submitTodoForm" > adicionar tarefa</button>
+              <button type="submit" id="submitTodoForm" > Doar um livro</button>
             </form>
         </div>
+       </div>
+
+
     </div>
   </div>
   <!-- recursos do firebase: import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"; -->
