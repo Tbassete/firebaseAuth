@@ -37,37 +37,82 @@ todoForm.onsubmit = function(event) {
               // Cria uma referência de arquivo no caminho acima
               var storageRef = firebase.storage().ref(imgPath);
               // Inicia o processo de upload
-              storageRef.put(file)
-                  .then(() => {
-                      console.log('Arquivo enviado com sucesso');
-                  })
-                  .catch((error) => {
-                      console.log('Erro ao enviar o arquivo:', error);
-                  });
+              var upload = storageRef.put(file)
+
+              trackUpload(upload).then(function(){
+                storageRef.getDownloadURL().then(function(downloadURL){
+                  const user = firebase.auth().currentUser;
+                  var data = {
+                    imgUrl: downloadURL,
+                    name: todoForm.name.value,
+                    userName: user.displayName,
+                    userId: firebase.auth().currentUser.uid // Adiciona o userId do usuário atual
+                };
+    
+                // Insere a tarefa na referência 'tasks'
+                dbRefUsers.child('tasks').push(data).then(function() {
+                    console.log('Tarefa: ' + data.name + ' adicionada com sucesso');
+                }).catch(function(error) {
+                    console.log('Erro ao adicionar o livro:', error);
+                });
+    
+                todoForm.name.value = ''; 
+                todoForm.file.value = '';
+                }).catch(function(error){
+                  showError('erro ao adicionar o livro', error)
+                })
+                
+              })
+
+
           } else {
               console.log('O arquivo selecionado não é uma imagem');
           }
       } else {
-          console.log('Nenhum arquivo foi selecionado');
+          alert('o livro precisa de uma foto da capa');
       }
-
-      var data = {
-          name: todoForm.name.value,
-          userId: firebase.auth().currentUser.uid // Adiciona o userId do usuário atual
-      };
-
-      // Insere a tarefa na referência 'tasks'
-      dbRefUsers.child('tasks').push(data).then(function() {
-          console.log('Tarefa: ' + data.name + ' adicionada com sucesso');
-      }).catch(function(error) {
-          console.log('Erro ao adicionar tarefa:', error);
-      });
-
-      todoForm.name.value = ''; // Limpa o campo de entrada após adicionar a tarefa
   } else {
       alert('O nome da tarefa não pode estar vazio');
   }
 };
+
+// rastreia o progresso de upload
+
+function trackUpload(upload){
+  return new Promise(function(resolve, reject){
+    showItem(progressFeedback)
+    upload.on('state_changed', 
+      function (snapshot){//segundo arumento recebe informações sobre o upload
+        progress.value = snapshot.bytesTransferred / snapshot.totalBytes * 100 
+      }, function(error){//terceiro argumento executa em caso de erro no upload
+        hideItem(progressFeedback)
+        reject(error)
+      },function(){//quarto argumento que executa em caso de sucesso do upload
+        console.log('sucesso no upload')
+        hideItem(progressFeedback)
+        resolve()
+      })
+  
+   var playPauseUpload = true // estado de controle do upload (pausado ou em andamento)
+   playPauseBtn.onclick = function(){
+    playPauseUpload = !playPauseUpload // inverte o estado de controle do botao
+  
+    if(playPauseUpload){
+      upload.resume()
+      playPauseBtn.innerHTML='Pausar'
+      console.log('upload retomado')
+    }else{
+      upload.pause()
+      playPauseBtn.innerHTML ='Continuar'
+      console.log('upload pausado')
+    }
+   }
+   cancelBtn.onclick = function(){
+    upload.cancel()
+    hideItem(progressFeedback)
+   } 
+  })   
+}
 
 function fillTodoList(tasks) {
     ulTodoList.innerHTML = '';
@@ -76,7 +121,14 @@ function fillTodoList(tasks) {
     // Verifica se tasks é um array
     if (Array.isArray(tasks) && tasks.length > 0) {
         tasks.forEach(function(task) {
+          
+
             var li = document.createElement('li');
+
+            var imgLi = document.createElement('img')
+            imgLi.src = task.imgUrl ? task.imgUrl: 'img/defaultTodo.png'
+            imgLi.setAttribute('class','imgTodo')
+            li.appendChild(imgLi)
             var spanLi = document.createElement('span');
             spanLi.appendChild(document.createTextNode(task.name));
             li.appendChild(spanLi);
@@ -99,7 +151,7 @@ function fillTodoList(tasks) {
 
         todoCount.innerHTML = num + (num > 1 ? ' tarefas' : ' tarefa') + ':';
     } else {
-        todoCount.innerHTML = 'Nenhuma tarefa encontrada.';
+        todoCount.innerHTML = 'Nenhuma livro disponivel.';
     }
 }
  
@@ -158,45 +210,72 @@ function fillTodoList(tasks) {
 //     }
 // }
 
-// versao nova de remover tarefas
+// versao nova de remover tarefas tenho que arrumar pois nao esta removendo a imagem do banco de dados.
 
 function removeTodo(key) {
-    var userId = firebase.auth().currentUser.uid; // Obtém o uid do usuário autenticado
-  
-    // Busca a tarefa no Firebase para verificar o userId
-    dbRefUsers.child('tasks').child(key).once('value').then(function(snapshot) {
-      var task = snapshot.val();
-  
-      // Verifica se o usuário autenticado é o criador da tarefa
-      if (task && task.userId === userId) {
-        var confirmation = confirm('Realmente deseja remover esta tarefa?');
-  
-        if (confirmation) {
-          // Remove a tarefa do Firebase
-          dbRefUsers.child('tasks').child(key).remove()
-            .then(() => {
-              // Se a tarefa foi removida com sucesso, também a remove do DOM
-              var selectedItem = document.querySelector('[data-key="' + key + '"]'); // Encontra o item pelo atributo data-key
-              if (selectedItem) {
-                selectedItem.remove(); // Remove o item da lista no DOM
-              }
-              alert('Tarefa removida com sucesso!');
-            })
-            .catch((error) => {
-              showError('Erro ao excluir a tarefa.', error);
-              console.log(error);
-            });
-        }
-      } else {
-        alert('Você não tem permissão para remover esta tarefa');
-        console.log('Tentativa de remoção não permitida. Usuário não é o criador.');
+  var userId = firebase.auth().currentUser.uid; // Obtém o uid do usuário autenticado
+  var todoName = document.querySelector('#' + key + ' > span');
+  var todoImg = document.querySelector('#' + key + ' > img');
+
+  // Busca a tarefa no Firebase para verificar o userId
+  dbRefUsers.child('tasks').child(key).once('value').then(function(snapshot) {
+    var task = snapshot.val();
+
+    // Verifica se o usuário autenticado é o criador da tarefa
+    if (task && task.userId === userId) {
+      var confirmation = confirm('Realmente deseja remover esta tarefa?');
+
+      if (confirmation) {
+        // Remove a tarefa do Firebase
+        dbRefUsers.child('tasks').child(key).remove()
+          .then(() => {
+            // Se a tarefa foi removida com sucesso, também a remove do DOM
+            var selectedItem = document.querySelector('[data-key="' + key + '"]');
+            if (selectedItem) {
+              selectedItem.remove(); // Remove o item da lista no DOM
+            }
+            alert('Tarefa removida com sucesso!');
+
+            // Verifica se a imagem existe antes de tentar removê-la
+            if (todoImg && todoImg.src) {
+              removeFile(todoImg.src);
+            } else {
+              console.warn('Imagem não encontrada ou src é indefinido.');
+            }
+          })
+          .catch((error) => {
+            showError('Erro ao excluir a tarefa.', error);
+            console.log(error);
+          });
       }
-    }).catch(function(error) {
-      showError('Erro ao acessar a tarefa no Firebase.', error);
-      console.log(error);
-    });
-  }
+    } else {
+      alert('Você não tem permissão para remover esta tarefa');
+      console.log('Tentativa de remoção não permitida. Usuário não é o criador.');
+    }
+  }).catch(function(error) {
+    showError('Erro ao acessar a tarefa no Firebase.', error);
+    console.log(error);
+  });
+}
+
   
+  //remove arquivos do firebase storage
+
+  function removeFile(imgUrl){
+    console.log(imgUrl)
+    var result = imgUrl.indexOf('img/defaultTodo.png')
+
+    if(result == -1){
+      firebase.storage().refFromURL(imgUrl).delete().then(()=>{
+        console.log('imagem removida com sucesso')
+      }).catch((error)=>{
+        console.log('falha ao remover o arquivo')
+        console.log(error)
+      })
+    }else{
+      console.log('nenhum arquivo foi removido')
+    }
+  }
 
 // codigo para qualquer um conseguir remover
 

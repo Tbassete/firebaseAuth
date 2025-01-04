@@ -28,6 +28,14 @@ var search = document.getElementById('search')
 
 var userInfo = document.getElementById('userInfo')
 var todoList = document.getElementById('todoList')
+
+var progressFeedback =document.getElementById('progressFeedback')
+var progress = document.getElementById('progress')
+
+var playPauseBtn = document.getElementById('playPauseBtn')
+var cancelBtn =document.getElementById('cancelBtn')
+
+
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
   authForm.submitAuthForm.innerHTML = 'Cadastrar conta'
@@ -197,7 +205,8 @@ function showProfile(){
 //atributos extras de verificação de auth
 
 var actionCodeSettings = {
-  url: 'https://todo-13563.firebaseapp.com'
+  // url: 'https://todo-13563.firebaseapp.com' //voltar para esse depois
+  url: 'http://127.0.0.1'
 }
 
 var database = firebase.database()

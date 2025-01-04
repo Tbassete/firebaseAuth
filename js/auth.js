@@ -63,7 +63,7 @@ function sendEmailVerification(){
         firebase.auth().sendPasswordResetEmail(email, actionCodeSettings).then(function(){
             alert('email para resetar a senha foi enviado.')
         }).catch(function(error){
-            showError('falha ao enviar email para redefinir a senha'+ error)
+            showError('falha ao enviar email para redefinir a senha', error)
         }).finally(function(){
             hideItem(loading)
         })

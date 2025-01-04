@@ -8,7 +8,8 @@ body {
 }
 
 #app {
-  min-width: 512px;
+
+  max-width: 912px;
   min-height: 400px;
   margin: auto;
   box-shadow: 4px 4px 20px #888;
@@ -34,7 +35,10 @@ h3 {
   height: 4vh;
   border-radius: 5px;
 }
-
+#PicGoogle{
+  /* position: absolute; */
+  left: 50%;
+}
 #authButton{
   display: flex;
   flex-direction: row;
@@ -125,7 +129,12 @@ p {
 .danger{
   background-color: #a70335;
 }
-
+.imgTodo{
+  min-width: 100px;
+  max-width: 300px;
+  height: auto;
+  border-radius: 8px;
+}
 ul{
   list-style-type: none;
   padding: 0px;

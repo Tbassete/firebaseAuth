@@ -57,7 +57,7 @@
       </p>
     </div>
       <p>ou acesse usando: </p>
-        <img src="img/google.png" alt="logotipo do google" onclick="signInWithGoogle()">
+        <img src="img/google.png" alt="logotipo do google" onclick="signInWithGoogle()" id="PicGoogle">
       
 
     
@@ -107,9 +107,16 @@
               <input type="text" id="name" placeholder="Titulo">
               <br>
               <label for="file">Foto:</label>
-              <input type="file" id="file" >
+              <input type="file" id="file" accept="image/*">
               <button type="submit" id="submitTodoForm" > Doar um livro</button>
             </form>
+
+            <div id="progressFeedback" class="startHidden">
+              <progress max="100" id="progress"></progress>
+              <button id="playPauseBtn" class="alternative">Pause</button>
+              <button id="cancelBtn" class="danger">Cancelar</button>
+            </div>
+
         </div>
        </div>
 
