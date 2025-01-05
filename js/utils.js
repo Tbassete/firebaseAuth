@@ -5,36 +5,33 @@ var authFormTitle = document.getElementById('authFormTitle')
 var register = document.getElementById('register')
 var access = document.getElementById('access')
 var loading = document.getElementById('loading')
-
 var auth = document.getElementById('auth')
 var userContent = document.getElementById('userContent')
 var userEmail = document.getElementById('userEmail')
-
 var sendEmailVerificationDiv = document.getElementById('sendEmailVerificationDiv')
-
 var emailVerified = document.getElementById('emailVerified')
-
 var passwordReset = document.getElementById('passwordReset')
-
 var userImg = document.getElementById('userImg')
-
 var userName = document.getElementById('userName')
-
 var todoForm = document.getElementById('todoForm')
 var todoCount = document.getElementById('todoCount')
 var ulTodoList = document.getElementById('ulTodoList')
-
+var RentedBooksList = document.getElementById('RentedBooksList')
+var RentCount = document.getElementById('RentCount')
 var search = document.getElementById('search')
-
 var userInfo = document.getElementById('userInfo')
 var todoList = document.getElementById('todoList')
-
 var progressFeedback =document.getElementById('progressFeedback')
 var progress = document.getElementById('progress')
-
 var playPauseBtn = document.getElementById('playPauseBtn')
 var cancelBtn =document.getElementById('cancelBtn')
+var resetTodoForm = document.getElementById('resetTodoForm')
 
+var confirmTodoUpdate = document.getElementById('confirmTodoUpdate')
+var todoFormTitle = document.getElementById('todoFormTitle')
+
+var headerBoots = document.getElementById('headerBoots')
+var footerr = document.getElementById('footerr')
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
@@ -83,7 +80,7 @@ function showUserContent(user){
   userName.innerHTML = user.displayName
   userEmail.innerHTML= user.email
   hideItem(auth)
-
+  showItem(headerBoots)
 
 
 getDefaultTodoList()
@@ -108,12 +105,12 @@ getDefaultTodoList()
 // metodo novo para mostrar todas as tarefas iterando por todos os usuarios
 search.onkeyup = function () {
   if (search.value !== '') {
-    const searchValue = search.value.toLowerCase();
+    const searchValue = search.value.toLowerCase(); // Mantém o valor exato da pesquisa
     console.log('Pesquisa iniciada:', searchValue);
 
     dbRefUsers.child('tasks')
-      .orderByChild('name') // Ordena as tarefas pelo campo 'name'
-      .startAt(searchValue) // Começa a partir do valor da pesquisa
+      .orderByChild('nameToLowerCase') // Ordena as tarefas pelo campo 'name'
+      .startAt(searchValue) // Começa a partir do valor da pesquisa (case sensitive)
       .endAt(searchValue + '\uf8ff') // Termina até um valor muito alto para cobrir todas as possibilidades
       .once('value')
       .then(function (snapshot) {
@@ -124,7 +121,7 @@ search.onkeyup = function () {
         // Itera sobre as chaves do objeto recebido do Firebase
         snapshot.forEach(function (taskSnapshot) {
           const task = taskSnapshot.val();
-          console.log('Tarefa encontrada:', task);
+          console.log('Livro encontrado:', task);
 
           // Adiciona a chave à tarefa para poder usá-la na exclusão/edição
           filteredTasks.push({ ...task, key: taskSnapshot.key });
@@ -142,6 +139,7 @@ search.onkeyup = function () {
 };
 
   showItem(userContent)
+  showItem(footerr)
 }
 
 // busca as tarefas em tempo real (listagem padrão)
@@ -165,6 +163,7 @@ function getDefaultTodoList() {
 
 //mostra a tela de authentication
 function showAuth(){
+  hideItem(headerBoots)
   hideItem(userContent)
   showItem(auth)
 }
@@ -200,13 +199,24 @@ function closeProfile(){
 function showProfile(){
   showItem(userInfo)
   hideItem(todoList)
+  hideItem(todoForm)
 }
 
+function DoarLivros(){
+  showItem(todoForm)
+  hideItem(todoList)
+  hideItem(userInfo)
+}
+
+function closeDoarLivros(){
+  showItem(todoList)
+  hideItem(todoForm)
+}
 //atributos extras de verificação de auth
 
 var actionCodeSettings = {
   // url: 'https://todo-13563.firebaseapp.com' //voltar para esse depois
-  url: 'http://127.0.0.1'
+  url: 'https://megatecabrasil.web.app/'
 }
 
 var database = firebase.database()

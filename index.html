@@ -3,26 +3,56 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>TodoList</title>
-  <link rel="shortcut icon" href="img/todoListFavicon.png" type="image/x-icon">
+  <title>Megateca</title>
+  <link rel="shortcut icon" href="img/dummy-geschichte.jpg" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
-
-  <div id="loading">
+<div id="loading">
+  <div id="divLoading">
     <img src="img/loading.gif" alt="carregando">
   </div>
+</div>
+
+<header class="startHidden" id="headerBoots">
+  <nav class="navbar navbar-expand-xxl navbar-withe bg-white" aria-label="Seventh navbar example">
+    <div class="container-fluid">
+      <a class="navbar-brand"><img src="img/megateca.png" alt=""></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleXxl" aria-controls="navbarsExampleXxl" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleXxl">
+        <ul class="navbar-nav me-auto mb-2 mb-xl-0">
+
+          <li class="nav-item" onclick="showProfile()" id="MyProfile">
+            <img id="userImg" >
+            <p >Meu perfil</p>
+          </li>
+          <li class="nav-item" id="divDoarLivros" onclick="DoarLivros()">
+            <img src="img/openbook.svg" alt="">
+            <p>Doar livros</p>
+          </li>
+          
+
+
+        </ul>
+
+      </div>
+    </div>
+  </nav>
+</header>
 
   <div id="app">
-    <!--Logotipo do TodoList-->
-    <div class="center">
-      <img src="img/megateca.png">
-    </div>
-        <!-- feedback de carregamento -->
+
       
     <!--Conteúdo destinado para usuários não autenticados-->
     <div id="auth" class="center">
+      <div class="center">
+        <img src="img/megateca.png">
+      </div>
       <!--Formulário de autenticação-->
       <form id="authForm">
         <h3 id="authFormTitle">Acesso ilimitado a biblioteca</h3>
@@ -44,6 +74,7 @@
           <button onclick="sendPasswordResetEmail()" class="alternative">Redefinir a senha</button>
         </p>
 
+        
       <!--Alternar o fomulário de autenticação para o cadastro de novas contas-->
       <p id="register">
         
@@ -66,7 +97,8 @@
     <!-- conteudo para usuarios authenticados -->
 
     <div id="userContent" class="startHidden">
-      <img id="userImg" onclick="showProfile()">
+
+      
 
       <div id="userInfo" class="startHidden" >
 
@@ -80,36 +112,74 @@
           <button class="alternative" onclick="sendEmailVerification()">Verificar email</button>
         </div>
         <button class="alternative" onclick="updateUserName()"> Alterar nome</button>
-        <button class="alternative" onclick="signOut()"> Sair</button>
-        <button class="danger" onclick="deleteUserAccount()"> Excluir conta</button>
+        <button class="alternative" onclick="signOut()"> LogOut</button>
+        <button onclick="fillRentedBooksList()">Meus Livros Alugados</button>
+      </div>
+      <hr>
+      <h3 id="RentCount"></h3>
+      <ul id="RentedBooksList"></ul>
+
       </div>
 
-      </div>
 
-
-        <hr>
+       
       <!-- exibir lista de tarefas -->
        <div id="todoList">
         <div class="center">
           <label for="search">Buscar:</label>
           <input type="text" placeholder="buscar" id="search">
-        </div>
-        <h3 id="todoCount">Carregando livros</h3>
-       
-        <ul id="ulTodoList"></ul>
 
+          <label for="FiltroGeneros" class="FiltroGeneros"> Filtrar por 
+            <select name="" id="FiltroGeneros">
+              <option value="Contabilidade"> Contabilidade</option>
+              <option value="Religioso / Espiritualidade">Religioso / Espiritualidade</option>
+              <option value="Geopolitica / literatura brasileira">Geopolitica / literatura brasileira</option>
+              <option value="Ficção" selected>Ficção</option>
+              <option value="Romance">Romance</option>
+              <option value="Auto ajuda / desenvolvimento">Auto ajuda / desenvolvimento</option>
+            </select>
+            <button type="button" onclick="BuscarFiltro()">Filtrar</button>
+          </label>
+          
+        </div>
+        <hr>
+        <h3 id="todoCount">Carregando livros:</h3>
+        
+        <ul id="ulTodoList"></ul>
+      </div>
         <hr>
         <div class="center">
           <!-- formulario de tarefas -->
-            <form id="todoForm">
-              <h3 id="todoForm"> Doar um livro</h3>
+            <form id="todoForm" class="startHidden" >
+
+              <h3 id="todoFormTitle"> Doar um livro</h3>
+              <button onclick="closeDoarLivros()" id="closeDoarLivro">x</button>
               <label for="name">livro:</label>
-              <input type="text" id="name" placeholder="Titulo">
+              <input type="text" id="name" placeholder="Titulo" required>
               <br>
               <label for="file">Foto:</label>
-              <input type="file" id="file" accept="image/*">
-              <button type="submit" id="submitTodoForm" > Doar um livro</button>
-            </form>
+              <input type="file" id="file" accept="image/*" required>
+
+              <label for="Genero">Genero:
+              <select name="" id="Genero" required>
+                <option value="Contabilidade"> Contabilidade</option>
+                <option value="Religioso / Espiritualidade">Religioso / Espiritualidade</option>
+                <option value="Geopolitica / literatura brasileira">Geopolitica / literatura brasileira</option>
+                <option value="Ficção" selected>Ficção</option>
+                <option value="Romance" >Romance</option>
+                <option value="Auto ajuda / desenvolvimento">Auto ajuda / desenvolvimento</option>
+              </select>
+              <br>
+            </label>
+            <hr>
+            <button type="submit" id="submitTodoForm" > Doar um livro</button>
+          </form>
+
+
+            <div id="cancelUpdateTodo" class="startHidden">
+              <button class="alternative" onclick="confirmTodoUpdate()"> Confirmar modificação</button>
+              <button class="danger" onclick="resetTodoForm()"> Cancelar modificação</button>
+            </div>
 
             <div id="progressFeedback" class="startHidden">
               <progress max="100" id="progress"></progress>
@@ -118,17 +188,22 @@
             </div>
 
         </div>
-       </div>
+       
 
 
     </div>
   </div>
+
+  <footer id="footerr" class="startHidden"><p>desenvolvido por <a href="https://tbassete.github.io/cv/">Thiago Bassete</a></p></footer>
+
+
   <!-- recursos do firebase: import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"; -->
   <!--Nossa programação em JavaScript-->
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-storage.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script src="js/firebase.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/auth.js"></script>
