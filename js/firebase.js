@@ -14,14 +14,13 @@
 
 
   var firebaseConfig = {
-    apiKey: "AIzaSyAcdiZdRO7oVujhppcMR4cPg-Z8KhExDxY",
-    authDomain: "freelaerp-a746e.firebaseapp.com",
-    databaseURL:"https://freelaerp-a746e-default-rtdb.firebaseio.com/",
-    projectId: "freelaerp-a746e",
-    storageBucket: "freelaerp-a746e.appspot.com",
-    messagingSenderId: "647648411737",
-    appId: "1:647648411737:web:468ec145cd58e8a0e4f148",
-    measurementId: "G-Y5R0SJSHD7"
+    apiKey: "AIzaSyBVtKAzZQB6lS9lvA_ciQ_NQX0icQlyupQ",
+    authDomain: "react-d3b3c.firebaseapp.com",
+    databaseURL: "https://react-d3b3c-default-rtdb.firebaseio.com",
+    projectId: "react-d3b3c",
+    storageBucket: "react-d3b3c.firebasestorage.app",
+    messagingSenderId: "510834341268",
+    appId: "1:510834341268:web:5fa6e38fe6f348b0364b81"
   };
 
   //   // Initialize Firebase

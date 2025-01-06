@@ -218,6 +218,7 @@ function closeDoarLivros(){
 var actionCodeSettings = {
   // url: 'https://todo-13563.firebaseapp.com' //voltar para esse depois
   url: 'https://megatecabrasil.web.app/'
+  // ur: 'https://127.0.0.1'
 }
 
 var database = firebase.database()

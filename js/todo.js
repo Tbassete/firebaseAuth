@@ -138,7 +138,7 @@ function BuscarFiltro() {
           card.appendChild(donorInfo);
           
           // Disponibiliza os botões de edição somente para o admin
-          if (userId === 'lUmCb4RKGNaxnXcgqaPK2ZQAnYb2') {
+          if (userId === '60ATcph6xShfJB7wfqFxBIGaZp32') {
               const actions = document.createElement('div');
               actions.setAttribute('class', 'actions');
 
@@ -289,7 +289,7 @@ function fillTodoList(tasks) {
       card.appendChild(donorInfo);
       //disnponibiliza os botoes de edição somente para mim
       const userId = firebase.auth().currentUser.uid;
-      if (userId === 'lUmCb4RKGNaxnXcgqaPK2ZQAnYb2') {
+      if (userId === '60ATcph6xShfJB7wfqFxBIGaZp32') {
           const actions = document.createElement('div');
           actions.setAttribute('class', 'actions');
 
