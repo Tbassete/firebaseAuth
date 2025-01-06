@@ -1,0 +1,94 @@
+@charset "utf-8";
+@media (min-width: 1000px) {
+    #headerBoots{
+      font-size: 1.2em;
+    }
+    #app {
+        margin-top: 20px;
+      font-size: 1.2em;
+    }
+  
+    h3 {
+      font-size: 1rem;
+    }
+  
+    button {
+      font-size: 14px;
+      padding: 6px 10px;
+    }
+    #login{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #formulario{
+        margin: 10px;
+        width: 60vw;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #imgAuth{
+        border-radius: 8px;
+        width: 60%;
+        height: 600px;
+        background-image: url('../img/bmw.PNG');
+        background-size: cover; 
+        background-repeat: no-repeat;
+        background-position: center-right;
+
+    }
+    .todo-card {
+      width: 80%;
+      height: 95%;
+      font-size: 1em;
+      padding: 10px;
+      & h3{
+        font-size: 1em;
+      }
+      & button{
+        font-size: 0.8em;
+        
+      }
+      text-align: center; /* Centralizar texto */
+      padding: 20px; /* Espaçamento interno dos itens */
+      border-radius: 5px; /* Bordas arredondadas */
+      font-size: 0.7em; /* Tamanho do texto */
+    }
+    #RentedBooksList{
+        display: grid;
+        grid-template-columns: repeat(3, 3fr); /* 3 colunas com tamanhos iguais */
+    }
+    #ulTodoList{
+        display: grid;
+        grid-template-columns: repeat(3, 3fr); /* 3 colunas com tamanhos iguais */
+    }
+    input {
+      font-size: 14px;
+    }
+  
+    .imgTodo {
+      width: 80%;
+      height: 70%;
+    }
+
+    #FiltroGeneros{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      
+        margin: 10px;
+        max-width: 70%;
+      & option{
+        font-size: 0.5em;
+      }
+      }
+      .FiltroGeneros{
+        font-size: 0.8em;
+      }
+  }
+
+  

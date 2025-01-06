@@ -1,6 +1,7 @@
 /* #054166 azul mega */
 /* #a70335 vermelho mega */
 /* Base Styles */
+@charset "utf-8";
 body {
   color: #444;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -11,7 +12,7 @@ body {
   min-height: 100vh;
   height: auto;
   margin: 0;
-  background-color: #f7f7f7; /* Adiciona um fundo neutro */
+  background-color: #cfcece; /* Adiciona um fundo neutro */
 }
 
 *{
@@ -29,13 +30,25 @@ body {
   border-bottom: 1px solid #05416669;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #021825; /* Para garantir que o header tenha fundo enquanto rola */
+
 }
 
+#NavHeader{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#ulHeader{
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
 
 /* App Container */
 #app {
-  min-width: 700px;
-  max-width: 912px;
+  width: 90vw;
   height: auto;
   margin-top: 10%;
   margin-bottom: 10%;
@@ -43,7 +56,14 @@ body {
   padding: 20px;
   border-radius: 20px;
   background-color: #ffffff;
+
 }
+
+#todoList{
+  font-size: 1.5em;
+}
+
+
 
 /* Utility Classes */
 .center {
@@ -109,7 +129,8 @@ input:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgb(255, 255, 255);
+  /* background-color: #cfcece; */
   width: 100vw;
   height: 100vh;
   z-index: 1000;
@@ -132,21 +153,21 @@ input:focus {
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  justify-content: end;
-  align-items: base;
+  justify-content: center;
+  align-items: center;
   & img{
-    width: 40px;
+    width: 30px;
   }
 }
 #MyProfile {
 display: flex;
 flex-direction: column;
-justify-content: end;
-align-items: baseline;
-margin-right: auto;
+justify-content: center;
+align-items: center;
+
 & img{
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
 }
 }
 
@@ -221,6 +242,10 @@ li:hover {
   border-radius: 8px;
 }
 
+#logoHeader{
+  width: auto;
+  height: 50px;
+}
 /* Buttons in List Items */
 .todoBtn {
   width: 60px;
@@ -238,36 +263,7 @@ li:hover {
 }
 
 /* Responsive Adjustments */
-@media (max-width: 900px) {
-  #app {
-    width: 90%;
-    padding: 16px;
-  }
 
-  h3 {
-    font-size: 1rem;
-  }
-
-  button {
-    font-size: 14px;
-    padding: 6px 10px;
-  }
-
-  .todo-card {
-    font-size: 1.7em;
-    & button{
-      font-size: 0.8em;
-    }
-  }
-
-  input {
-    font-size: 14px;
-  }
-
-  .imgTodo {
-    max-width: 200px;
-  }
-}
 #PicGoogle{
   position: relative;
   left: 47%;
@@ -284,18 +280,27 @@ select{
   float: left;
   width: 100%;
   height: 45px;
+  font-size: 1.1em;
   border-radius: 8px;
   border-color: #054166;
 }
 
-.FiltroGeneros{
+/* section de buscar */
+
+#FiltroGeneros{
   display: flex;
   justify-content: center;
   align-items: center;
-& select{
+  flex-direction: column;
+
   margin: 10px;
   max-width: 70%;
+& option{
+  font-size: 0.5em;
 }
+}
+.FiltroGeneros{
+  font-size: 0.8em;
 }
 /* gpt pra baixo */
 
@@ -307,7 +312,14 @@ select{
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 450px;
+  width: 70vw;
+  font-size: 90%;
+  & h3{
+    font-size: 2.5em;
+  }
+  & button{
+    font-size: 1.2em;
+  }
 }
 
 .imgTodo {

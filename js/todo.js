@@ -430,6 +430,82 @@ function fillRentedBooksList() {
 }
 
 
+// função que exibe os livros que o usuario doou
+
+function MyDonateBooks() {
+  const userId = firebase.auth().currentUser.uid; // Obtém o ID do usuário atual
+
+  // Limpar a lista de livros doados
+  RentedBooksList.innerHTML = '';
+  let num = 0; // Inicializa o contador
+
+  dbRefUsers.child('tasks')
+    .once('value')
+    .then((snapshot) => {
+      const allTasks = snapshot.val();
+      const filteredTasks = [];
+
+      // Filtra somente os livros doados pelo usuário atual
+      for (const key in allTasks) {
+        const task = allTasks[key];
+        if (task.
+          userIdDoador
+           === userId) {
+          filteredTasks.push({ ...task, key });
+        }
+      }
+
+      // Verifica se há livros doados
+      if (filteredTasks.length > 0) {
+        filteredTasks.forEach((task) => {
+          // Criação do contêiner do card
+          const card = document.createElement('div');
+          card.setAttribute('class', 'todo-card');
+          card.setAttribute('id', task.key);
+
+          // Imagem do livro
+          const imgLi = document.createElement('img');
+          imgLi.src = task.imgUrl || 'placeholder.jpg'; // Exibe imagem ou um placeholder
+          imgLi.setAttribute('class', 'imgTodo');
+          card.appendChild(imgLi);
+
+          // Nome do livro
+          const title = document.createElement('h3');
+          title.textContent = task.name || 'Sem Título';
+          card.appendChild(title);
+
+          // Gênero do livro
+          const genre = document.createElement('p');
+          genre.textContent = 'Gênero: ' + (task.Genero || 'Indefinido');
+          card.appendChild(genre);
+
+          // // Informações da doação
+          // const donatedOn = document.createElement('p');
+          // donatedOn.textContent = `Doado em: ${new Date(task.donatedAt).toLocaleDateString()}`;
+          // card.appendChild(donatedOn);
+
+          // Botão para editar detalhes do livro doado
+          const editBtn = document.createElement('button');
+          editBtn.textContent = 'Editar';
+          editBtn.setAttribute('onclick', `editBookDetails("${task.key}")`);
+          editBtn.setAttribute('class', 'edit');
+          card.appendChild(editBtn);
+
+          RentedBooksList.appendChild(card);
+          num++; // Incrementa o contador para cada livro doado
+        });
+
+        // Exibe a contagem de livros doados no momento
+        RentCount.innerHTML = `${num} ${num > 1 ? 'Livros doados' : 'Livro doado'} por você:`;
+      } else {
+        RentCount.innerHTML = 'Você não doou nenhum livro.';
+      }
+    })
+    .catch((error) => {
+      console.error('Erro ao carregar os livros doados:', error);
+      RentCount.innerHTML = 'Erro ao carregar os livros doados.';
+    });
+}
 
 
 

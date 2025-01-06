@@ -200,6 +200,7 @@ function showProfile(){
   showItem(userInfo)
   hideItem(todoList)
   hideItem(todoForm)
+  fillRentedBooksList()
 }
 
 function DoarLivros(){
