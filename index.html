@@ -39,8 +39,12 @@
             <img src="img/openbook.svg" alt="">
             <p>Doar livros</p>
           </li>
-          
 
+          <li class="nav-item" id="divDoarLivros" onclick="Destaques()">      
+            <img src="img/destaques.png" alt="">
+            <p>Destaques</p>
+          </li>
+          
 
         </ul>
 
@@ -135,7 +139,46 @@
 
       </div>
 
+      <div class="startHidden" id="DestaquesMega"> 
+        <main class="highlights-container">
+          <section class="highlight">
+            <h2>📚 Livros Mais Lidos</h2>
+            <ul>
+              <li>Livro 1 - Autor 1</li>
+              <li>Livro 2 - Autor 2</li>
+              <li>Livro 3 - Autor 3</li>
+            </ul>
+          </section>
+          <section class="highlight">
+            <h2>🏆 Pessoas Que Mais Leram</h2>
+            <ul>
+              <li>Usuário 1 - 50 livros</li>
+              <li>Usuário 2 - 40 livros</li>
+              <li>Usuário 3 - 35 livros</li>
+            </ul>
+          </section>
+          <section class="highlight">
+            <h2>📖 Pessoas Que Mais Doaram Livros</h2>
+            <ul>
+              <li>Usuário A - 20 livros</li>
+              <li>Usuário B - 15 livros</li>
+              <li>Usuário C - 12 livros</li>
+            </ul>
+          </section>
+          <section class="highlight featured-book">
+            <h2>🌟 Livro Indicado do Mês</h2>
+            <div class="featured-book-content">
+              <img src="livro-indicado.jpg" alt="Capa do Livro Indicado">
+              <div>
+                <h3>Título do Livro</h3>
+                <p>Autor: Nome do Autor</p>
+                <p>Descrição: Este é um resumo incrível sobre o livro indicado do mês. Não perca a leitura!</p>
+              </div>
+            </div>
+          </section>
+        </main>
 
+      </div>
        
       <!-- exibir lista de tarefas -->
        <div id="todoList">
@@ -160,6 +203,8 @@
         <h3 id="todoCount">Carregando livros:</h3>
         
         <ul id="ulTodoList"></ul>
+        <div id="pagination-controls"></div>
+
       </div>
         <hr>
         <div class="center">

@@ -86,6 +86,7 @@ todoForm.onsubmit = function(event) {
 };
 //busca atraves do filtro 
 function BuscarFiltro() {
+
   const filtroGenero = document.getElementById('FiltroGeneros').value; // Obtém o gênero selecionado
   const userId = firebase.auth().currentUser.uid; // Obtém o ID do usuário atual
   
@@ -104,6 +105,7 @@ function BuscarFiltro() {
       
       // Exibe os livros filtrados
       ulTodoList.innerHTML = ''; // Limpa a lista antes de adicionar os livros filtrados
+      let num = 0;
       if (filteredBooks.length > 0) {
         filteredBooks.forEach((book) => {
           const card = document.createElement('div');
@@ -192,7 +194,9 @@ function BuscarFiltro() {
               });
 
           ulTodoList.appendChild(card);
+          num++;
         });
+        todoCount.innerHTML = `${num} ${num > 1 ? 'Livros' : 'Livro'} exibidos nesta página.`;
       } else {
         ulTodoList.innerHTML = 'Nenhum livro encontrado para esse gênero.';
       }
@@ -246,29 +250,57 @@ function trackUpload(upload){
   })   
 }
 
-// remade by gpt
+// 
+//testes
+// 
+let currentPage = 0; // Variável global para controlar a página atual
+const itemsPerPage = 9; // Itens por página
+let tasks = []; // Array global para armazenar as tarefas
+
 function fillTodoList(tasks) {
+  if (!Array.isArray(tasks)) {
+    console.error('O parâmetro "tasks" precisa ser um array válido.');
+    return;
+  }
+
   // Limpar a lista de tarefas
   ulTodoList.innerHTML = '';
   let num = 0;
 
-  // Verifica se tasks é um array válido
-  if (Array.isArray(tasks) && tasks.length > 0) {
-    tasks.forEach(function (task) {
-      // Criação do contêiner do card
-      var card = document.createElement('div');
-      card.setAttribute('class', 'todo-card');
-      card.setAttribute('id', task.key); // Adiciona um ID único ao card
+  // Cálculo dos índices para a paginação
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const tasksToShow = tasks.slice(startIndex, endIndex);
 
-      // Imagem do livro
-      var imgLi = document.createElement('img');
-      imgLi.src = task.imgUrl; 
+  if (tasksToShow.length > 0) {
+    tasksToShow.forEach(function (task) {
+      // Criação do contêiner do card
+      const card = document.createElement('div');
+      card.setAttribute('class', 'todo-card');
+      card.setAttribute('id', task.key);
+
+      // Adiciona imagem do livro
+      // Adiciona uma imagem padrão enquanto a imagem real é carregada
+      const imgLi = document.createElement('img');
+      const defaultImg = 'img/loading.gif'; // Caminho para sua imagem padrão
+      imgLi.src = defaultImg; // Define a imagem padrão inicialmente
       imgLi.setAttribute('class', 'imgTodo');
       imgLi.setAttribute('id', `img-${task.key}`);
-      card.appendChild(imgLi);
 
-      // Nome do livro
-      var title = document.createElement('h3');
+      // Troca para a imagem real após o carregamento
+      const realImgUrl = task.imgUrl; // URL da imagem real
+      const imgLoader = new Image(); // Cria um pré-carregador para a imagem real
+      imgLoader.onload = function () {
+        imgLi.src = realImgUrl; // Substitui a imagem padrão pela imagem real
+      };
+      imgLoader.onerror = function () {
+        console.error(`Erro ao carregar a imagem: ${realImgUrl}`);
+      };
+      imgLoader.src = realImgUrl; // Inicia o carregamento da imagem real
+
+      card.appendChild(imgLi);
+      // Adiciona o nome do livro
+      const title = document.createElement('h3');
       title.textContent = task.name || 'Sem Título';
       card.appendChild(title);
 
@@ -347,13 +379,175 @@ function fillTodoList(tasks) {
 
             ulTodoList.appendChild(card);
             num++;
-        });
+    });
 
-    todoCount.innerHTML = `${num} ${num > 1 ? 'Livros' : 'Livro'}:`;
+    todoCount.innerHTML = `${num} ${num > 1 ? 'Livros' : 'Livro'} exibidos nesta página.`;
   } else {
-    todoCount.innerHTML = 'Nenhum livro disponível.';
+    todoCount.innerHTML = 'Nenhum livro disponível nesta página.';
   }
+
+  updatePaginationControls(tasks.length, tasks);
 }
+
+function updatePaginationControls(totalItems, tasks) {
+  const paginationControls = document.getElementById('pagination-controls');
+  paginationControls.innerHTML = '';
+
+  // Cálculo do total de páginas
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  // Exibir informações de paginação
+  const pageInfo = document.createElement('span');
+  pageInfo.textContent = `Página ${currentPage + 1} de ${totalPages}`;
+  paginationControls.appendChild(pageInfo);
+
+  // Botão "Anterior"
+  if (currentPage > 0) {
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Anterior';
+    prevButton.onclick = () => {
+      currentPage--;
+      fillTodoList(tasks);
+  
+      // Voltar ao início da página (onde fica todoCount)
+      todoCount.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    paginationControls.appendChild(prevButton);
+  }
+  
+  // Botão "Próximo"
+  if ((currentPage + 1) * itemsPerPage < totalItems) {
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Próximo';
+    nextButton.onclick = () => {
+      currentPage++;
+      fillTodoList(tasks);
+  
+      // Voltar ao início da página (onde fica todoCount)
+      todoCount.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    paginationControls.appendChild(nextButton);
+  }
+  
+}
+
+// Exemplo de carregamento inicial
+
+
+// Exemplo de carregamento inicial
+
+
+
+
+// // remade by gpt
+// function fillTodoList(tasks) {
+//   // Limpar a lista de tarefas
+//   ulTodoList.innerHTML = '';
+//   let num = 0;
+
+//   // Verifica se tasks é um array válido
+//   if (Array.isArray(tasks) && tasks.length > 0) {
+//     tasks.forEach(function (task) {
+//       // Criação do contêiner do card
+//       var card = document.createElement('div');
+//       card.setAttribute('class', 'todo-card');
+//       card.setAttribute('id', task.key); // Adiciona um ID único ao card
+
+//       // Imagem do livro
+//       var imgLi = document.createElement('img');
+//       imgLi.src = task.imgUrl; 
+//       imgLi.setAttribute('class', 'imgTodo');
+//       imgLi.setAttribute('id', `img-${task.key}`);
+//       card.appendChild(imgLi);
+
+//       // Nome do livro
+//       var title = document.createElement('h3');
+//       title.textContent = task.name || 'Sem Título';
+//       card.appendChild(title);
+
+//       // Gênero do livro
+//       var genre = document.createElement('p');
+//       genre.textContent = 'Gênero: ' + (task.Genero );
+//       card.appendChild(genre);
+
+//       // Informações do doador
+//       var donorInfo = document.createElement('div');
+//       donorInfo.setAttribute('class', 'donor-info');
+
+//       // Nome do doador
+//       var donorName = document.createElement('p');
+//       donorName.textContent = 'Doado por: ' + (task.userNameDoador);
+//       donorInfo.appendChild(donorName);
+
+//       card.appendChild(donorInfo);
+//       //disnponibiliza os botoes de edição somente para mim
+//       const userId = firebase.auth().currentUser.uid;
+//       if (userId === '60ATcph6xShfJB7wfqFxBIGaZp32') {
+//           const actions = document.createElement('div');
+//           actions.setAttribute('class', 'actions');
+
+//           // Botão de excluir
+//           const removeBtn = document.createElement('button');
+//           removeBtn.textContent = 'Excluir';
+//           removeBtn.setAttribute('onclick', `removeTodo("${task.key}")`);
+//           removeBtn.setAttribute('class', 'danger');
+//           actions.appendChild(removeBtn);
+
+//           // Botão de editar
+//           const updateBtn = document.createElement('button');
+//           updateBtn.textContent = 'Editar';
+//           updateBtn.setAttribute('onclick', `updateTodo("${task.key}")`);
+//           updateBtn.setAttribute('class', 'alternative');
+//           actions.appendChild(updateBtn);
+
+//           card.appendChild(actions);
+//       }
+
+
+          
+//             // Verifica se o livro está alugado
+//             dbRefUsers.child(`tasks/${task.key}/currentRental`).once('value')
+//                 .then(snapshot => {
+//                     const rental = snapshot.val();
+//                     const userId = firebase.auth().currentUser.uid; // Obtém o ID do usuário atual
+
+//                     if (rental) {
+//                         // Mostra quem está alugando
+//                         const rentedBy = document.createElement('p');
+//                         rentedBy.textContent = `Alugado no momento por: ${rental.rentedBy}`;
+//                         card.appendChild(rentedBy); // Exibe diretamente no card
+
+//                         // Se o usuário atual alugou o livro, mostra o botão de devolver
+//                         if (rental.rentedById === userId) {
+//                             const returnBtn = document.createElement('button');
+//                             returnBtn.textContent = 'Devolver';
+//                             returnBtn.setAttribute('onclick', `returnBook("${task.key}")`);
+//                             returnBtn.setAttribute('class', 'return');
+//                             card.appendChild(returnBtn); // Exibe o botão de devolver diretamente no card
+//                         }
+//                     } else {
+//                         // Se não estiver alugado, mostra o botão de alugar
+//                         const rentBtn = document.createElement('button');
+//                         rentBtn.textContent = 'Alugar';
+//                         rentBtn.setAttribute('onclick', `rentBook("${task.key}", "${task.name}")`);
+//                         rentBtn.setAttribute('class', 'rent');
+//                         card.appendChild(rentBtn); // Exibe o botão de alugar diretamente no card
+//                     }
+//                 })
+//                 .catch(error => {
+//                     console.error('Erro ao verificar o status de aluguel:', error);
+//                 });
+
+//             ulTodoList.appendChild(card);
+//             num++;
+//         });
+
+//     todoCount.innerHTML = `${num} ${num > 1 ? 'Livros' : 'Livro'}:`;
+//   } else {
+//     todoCount.innerHTML = 'Nenhum livro disponível.';
+//   }
+// }
+
 
 // Exibe para o usuário quais são os livros que ele tem alugados no momento
 function fillRentedBooksList() {
@@ -506,7 +700,6 @@ function MyDonateBooks() {
       RentCount.innerHTML = 'Erro ao carregar os livros doados.';
     });
 }
-
 
 
 

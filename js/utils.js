@@ -33,6 +33,8 @@ var todoFormTitle = document.getElementById('todoFormTitle')
 var headerBoots = document.getElementById('headerBoots')
 var footerr = document.getElementById('footerr')
 
+var DestaquesMega = document.getElementById('DestaquesMega')
+
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
   authForm.submitAuthForm.innerHTML = 'Cadastrar conta'
@@ -200,13 +202,25 @@ function showProfile(){
   showItem(userInfo)
   hideItem(todoList)
   hideItem(todoForm)
+  hideItem(DestaquesMega)
   fillRentedBooksList()
 }
+
+// exibe os destaques da biblioteca
+
+function Destaques(){
+  showItem(DestaquesMega)
+  hideItem(todoList)
+  hideItem(todoForm)
+  hideItem(userInfo)
+}
+
 
 function DoarLivros(){
   showItem(todoForm)
   hideItem(todoList)
   hideItem(userInfo)
+  hideItem(DestaquesMega)
 }
 
 function closeDoarLivros(){

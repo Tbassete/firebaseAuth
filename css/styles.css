@@ -414,7 +414,69 @@ footer .social-icons a {
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
+
+
+/* destaques */
+
+.highlights-container {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.highlight {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.highlight:hover {
+  transform: translateY(-5px);
+}
+
+.highlight h2 {
+  color: #4CAF50;
+  margin-bottom: 1rem;
+}
+
+.highlight ul {
+  list-style: none;
+}
+
+.highlight ul li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.highlight ul li:last-child {
+  border-bottom: none;
+}
+
+.featured-book-content {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.featured-book-content img {
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+
+
+
 footer .social-icons a:hover {
   background-color: #4294c7;
   transform: scale(1.1); /* Leve efeito de zoom */
 }
+
+
+/*  */
