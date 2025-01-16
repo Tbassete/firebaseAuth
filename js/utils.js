@@ -213,6 +213,8 @@ function Destaques(){
   hideItem(todoList)
   hideItem(todoForm)
   hideItem(userInfo)
+  fetchAndFillHighlights()
+  fillHighlightsFromFirebase()
 }
 
 

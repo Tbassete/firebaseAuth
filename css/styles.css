@@ -470,6 +470,11 @@ footer .social-icons a {
   border-radius: 8px;
 }
 
+.user-photo{
+  border-radius: 50%;
+  max-width: 33px;
+  margin-right: 5px;
+}
 
 
 

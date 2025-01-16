@@ -94,7 +94,7 @@ function BuscarFiltro() {
     .then((snapshot) => {
       const allBooks = snapshot.val();
       const filteredBooks = [];
-      
+      console.log("Dados brutos do Firebase:", allBooks);
       // Filtra os livros com base no gênero selecionado
       for (const key in allBooks) {
         const book = allBooks[key];
@@ -432,9 +432,183 @@ function updatePaginationControls(totalItems, tasks) {
 }
 
 // Exemplo de carregamento inicial
+// exibe os destaques
+
+function fetchAndFillHighlights() {
 
 
-// Exemplo de carregamento inicial
+  dbRefUsers.child('tasks')
+    .once('value')
+    .then((snapshot) => {
+      const allTasks = snapshot.val();
+    
+
+
+      if (!allTasks) {
+        console.error("Nenhum dado encontrado no Firebase.");
+        return;
+      }
+
+      // Transformar os dados em um array
+      const tasksArray = Object.keys(allTasks).map(key => ({ key, ...allTasks[key] }));
+
+      if (tasksArray.length === 0) {
+        console.error("Nenhuma tarefa válida encontrada no banco de dados.");
+        return;
+      }
+
+
+      fillHighlightsFromFirebase(tasksArray);
+    })
+    .catch((error) => {
+      console.error("Erro ao buscar tarefas do Firebase:", error);
+    });
+}
+
+
+function fillHighlightsFromFirebase(tasks) {
+  if (!Array.isArray(tasks) || tasks.length === 0) {
+    console.error("Os dados fornecidos não são válidos ou estão vazios.");
+    return;
+  }
+
+
+  // Exemplo: Preenchendo a lista de destaques
+  const livrosMaisLidos = document.querySelector("#DestaquesMega .highlights-container .highlight:nth-child(1) ul");
+  const pessoasMaisLeram = document.querySelector("#DestaquesMega .highlights-container .highlight:nth-child(2) ul");
+  const pessoasMaisDoaram = document.querySelector("#DestaquesMega .highlights-container .highlight:nth-child(3) ul");
+
+  // Limpar listas existentes
+  livrosMaisLidos.innerHTML = "";
+  pessoasMaisLeram.innerHTML = "";
+  pessoasMaisDoaram.innerHTML = "";
+
+  tasks.forEach(task => {
+    const { name, Genero, rentalHistory, photoUrlDoador } = task;
+
+    // Livros mais lidos
+      // Selecionar o elemento onde os livros mais lidos serão exibidos
+const livrosMaisLidos = document.querySelector("#DestaquesMega .highlights-container .highlight:nth-child(1) ul");
+livrosMaisLidos.innerHTML = ""; // Limpar lista existente
+
+// Ordenar as tarefas com base no número de vezes que o livro foi alugado
+const sortedTasks = tasks
+  .filter(task => task.rentalHistory) // Filtrar apenas os livros com histórico de aluguel
+  .sort((a, b) => Object.keys(b.rentalHistory).length - Object.keys(a.rentalHistory).length);
+
+// Pegar os 3 primeiros livros mais lidos
+const top3Books = sortedTasks.slice(0, 3);
+
+// Preencher a lista com os 3 livros mais lidos
+top3Books.forEach(task => {
+  const { name, Genero, rentalHistory } = task;
+  const rentalCount = Object.keys(rentalHistory).length; // Contar os alugueis
+
+  const listItem = document.createElement("li");
+  listItem.textContent = `${name || "Sem Nome"} - Gênero: ${Genero || "Desconhecido"} - Alugado ${rentalCount} vezes`;
+  livrosMaisLidos.appendChild(listItem);
+});
+
+
+    // Pessoas que mais leram
+// Selecionar o elemento onde as pessoas que mais leram serão exibidas
+const pessoasMaisLeram = document.querySelector("#DestaquesMega .highlights-container .highlight:nth-child(2) ul");
+pessoasMaisLeram.innerHTML = ""; // Limpar lista existente
+
+// Criar um contador para quantificar os alugueis por pessoa
+const readerCounts = {};
+
+// Iterar sobre as tarefas para acumular os dados
+tasks.forEach(task => {
+  if (task.rentalHistory) {
+    Object.values(task.rentalHistory).forEach(history => {
+      const rentedBy = history.rentedBy || "Desconhecido";
+      const rentedByPhoto = history.rentedByImg || "img/unknownUser.png";
+      
+
+      // Incrementar o contador e armazenar a foto
+      if (!readerCounts[rentedBy]) {
+        readerCounts[rentedBy] = { count: 0, photo: rentedByPhoto };
+      }
+      readerCounts[rentedBy].count++;
+    });
+  }
+});
+
+// Transformar o contador em um array de pares [nome, dados] e ordenar
+const sortedReaders = Object.entries(readerCounts)
+  .sort(([, a], [, b]) => b.count - a.count) // Ordenar por quantidade decrescente
+  .slice(0, 3); // Pegar os 3 que mais leram
+
+// Preencher a lista com os 3 leitores mais frequentes
+sortedReaders.forEach(([reader, { count, photo }]) => {
+  const listItem = document.createElement("li");
+  const img = document.createElement("img");
+  img.src = photo;
+  img.alt = reader;
+  img.classList.add("user-photo");
+  
+
+  const name = document.createElement("span");
+  name.textContent = `${reader} - Leu ${count} livros`;
+
+  listItem.appendChild(img);
+  listItem.appendChild(name);
+  pessoasMaisLeram.appendChild(listItem);
+});
+
+
+
+    // Pessoas que mais doaram
+// Selecionar o elemento onde as pessoas que mais doaram serão exibidas
+const pessoasMaisDoaram = document.querySelector("#DestaquesMega .highlights-container .highlight:nth-child(3) ul");
+pessoasMaisDoaram.innerHTML = ""; // Limpar lista existente
+
+// Criar um contador para quantificar as doações por pessoa
+const donorCounts = {};
+
+// Iterar sobre as tarefas para acumular os dados
+tasks.forEach(task => {
+  const donor = task.userNameDoador || "Desconhecido";
+  const donorPhoto = task.photoUrlDoador || "img/unknownUser.png";
+
+  // Incrementar o contador e armazenar a foto
+  if (!donorCounts[donor]) {
+    donorCounts[donor] = { count: 0, photo: donorPhoto };
+  }
+  donorCounts[donor].count++;
+});
+
+// Transformar o contador em um array de pares [nome, dados] e ordenar
+const sortedDonors = Object.entries(donorCounts)
+  .sort(([, a], [, b]) => b.count - a.count) // Ordenar por quantidade decrescente
+  .slice(0, 3); // Pegar os 3 que mais doaram
+
+// Preencher a lista com os 3 doadores mais frequentes
+sortedDonors.forEach(([donor, { count, photo }]) => {
+  const listItem = document.createElement("li");
+  const img = document.createElement("img");
+  img.src = photo;
+  img.alt = donor;
+  img.classList.add("user-photo");
+  
+  const name = document.createElement("span");
+  name.textContent = `${donor} - Doou ${count} livros`;
+
+  listItem.appendChild(img);
+  listItem.appendChild(name);
+  listItem.setAttribute('id','imgUser')
+  pessoasMaisDoaram.appendChild(listItem);
+});
+
+
+  });
+
+  console.log("Destaques preenchidos com sucesso.");
+}
+
+
+
 
 
 
@@ -821,10 +995,11 @@ function rentBook(key, name) {
     alert('Por favor, atualize seu nome no perfil antes de alugar um livro.');
     return; // Impede o aluguel se o nome não estiver atualizado
   }
-
+  const user = firebase.auth().currentUser;
   const rentalData = {
     rentedBy: userName,
     rentedById: userId,
+    rentedByImg: user.photoURL,
     rentedAt: new Date().toISOString(),
   };
 
