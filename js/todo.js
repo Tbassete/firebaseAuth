@@ -523,7 +523,7 @@ tasks.forEach(task => {
   if (task.rentalHistory) {
     Object.values(task.rentalHistory).forEach(history => {
       const rentedBy = history.rentedBy || "Desconhecido";
-      const rentedByPhoto = history.rentedByImg || "img/unknownUser.png";
+      const rentedByPhoto = history.rentedByImg || "img/dummy-geschichte.jpg";
       
 
       // Incrementar o contador e armazenar a foto

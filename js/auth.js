@@ -102,6 +102,70 @@ function sendEmailVerification(){
   }
 
 
+//   função para atualizar a foto de perfil
+function showFormUpdateImgProfile(){
+    showItem(updatePhoto)
+}
+
+  // Referência ao formulário e ao campo de input
+const profilePhotoForm = document.getElementById('profilePhotoForm');
+const profilePhotoInput = document.getElementById('profilePhotoInput');
+
+// Função para atualizar a foto de perfil
+profilePhotoForm.addEventListener('submit', function(event) {
+    event.preventDefault(); // Impede o envio padrão do formulário
+    
+    const file = profilePhotoInput.files[0]; // Obtém o arquivo selecionado
+    if (!file) {
+        alert('Por favor, selecione um arquivo.');
+        return;
+    }
+    
+    // Referência ao Firebase Storage
+    const storageRef = firebase.storage().ref();
+    const user = firebase.auth().currentUser;
+    const photoRef = storageRef.child(`profilePhotos/${user.uid}/${file.name}`);
+
+
+    const uploadTask = photoRef.put(file);
+
+    // Monitora o progresso do upload
+    uploadTask.on(
+        'state_changed',
+        function(snapshot) {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Progresso do upload: ' + progress + '%');
+        },
+        function(error) {
+            console.error('Erro no upload:', error);
+            alert('Ocorreu um erro ao fazer o upload da foto.');
+        },
+        trackUpload(uploadTask).then(function(){
+ 
+
+
+                // Concluído: Obtém a URL pública do arquivo e atualiza o perfil do usuário
+                uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                    return user.updateProfile({
+                        photoURL: downloadURL
+                    });
+                }).then(function() {
+                    alert('Foto de perfil atualizada com sucesso!');
+                    hideItem(updatePhoto); // Oculta o item de atualização se necessário
+                }).catch(function(error) {
+                    console.log(error);
+                    alert('Ocorreu um erro ao atualizar a foto de perfil.');
+                });
+            
+        }).catch(function(error){
+          showError('falha ao atualizar o livro '+error)
+        })
+    );
+
+});
+
+
+
   // função de exckuir a conta 
 
   function deleteUserAccount(){

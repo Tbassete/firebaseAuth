@@ -34,6 +34,7 @@ var headerBoots = document.getElementById('headerBoots')
 var footerr = document.getElementById('footerr')
 
 var DestaquesMega = document.getElementById('DestaquesMega')
+var updatePhoto =document.getElementById('updatePhoto')
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {

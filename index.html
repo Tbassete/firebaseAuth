@@ -129,9 +129,19 @@
           <button class="alternative" onclick="sendEmailVerification()">Verificar email</button>
         </div>
         <button class="alternative" onclick="updateUserName()"> Alterar nome</button>
+        <button class="alternative" onclick="showFormUpdateImgProfile()">Atualizar a foto de perfil</button>
         <button class="alternative" onclick="signOut()"> LogOut</button>
         <button onclick="fillRentedBooksList()">Livros alugados</button>
         <button onclick="MyDonateBooks()">Meus livros doados</button>
+        
+        
+      </div>
+      <div class="startHidden" id="updatePhoto">
+        <form id="profilePhotoForm">
+          <label for="profilePhotoInput">Selecione uma nova foto de perfil:</label>
+          <input type="file" id="profilePhotoInput" accept="image/*">
+          <button type="submit">Atualizar Foto</button>
+        </form>        
       </div>
       <hr>
       <h3 id="RentCount"></h3>

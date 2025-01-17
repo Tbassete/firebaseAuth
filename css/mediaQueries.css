@@ -1,5 +1,8 @@
 @charset "utf-8";
 @media (min-width: 1000px) {
+    #closeProfile{
+      left: 0%;
+    }
     #headerBoots{
       font-size: 1.2em;
     }
