@@ -26,6 +26,42 @@
         align-items: center;
     }
 
+    #NavHeader{
+      font-size: 1em;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+    #divDoarLivros{
+
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      & img{
+        width: 30px;
+      }
+    }
+    #userImg {
+      cursor: pointer;
+      height: 70px;
+      width: 70px;
+      border-radius: 50%;
+    }
+
+    #MyProfile {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      
+      & img{
+        width: 30px;
+        height: 30px;
+      }
+      }
     #formulario{
         margin: 10px;
         width: 60vw;
@@ -92,6 +128,71 @@
       .FiltroGeneros{
         font-size: 0.8em;
       }
+
+      /* destaques */
+      /* destaques */
+
+.highlights-container {
+  font-size: 1em;
+  display: grid;
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.highlight {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.highlight:hover {
+  transform: translateY(-5px);
+}
+
+.highlight h2 {
+  color: #4CAF50;
+  margin-bottom: 1rem;
+}
+
+.highlight ul {
+  list-style: none;
+}
+
+.highlight ul li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.highlight ul li:last-child {
+  border-bottom: none;
+}
+
+.featured-book-content {
+  & h3{
+    font-size: 2em;
+  }
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.featured-book-content img {
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.user-photo{
+  border-radius: 50%;
+  max-width: 33px;
+  margin-right: 5px;
+}
   }
 
   

@@ -86,7 +86,7 @@ todoForm.onsubmit = function(event) {
 };
 //busca atraves do filtro 
 function BuscarFiltro() {
-
+  hideItem(pagination)
   const filtroGenero = document.getElementById('FiltroGeneros').value; // Obtém o gênero selecionado
   const userId = firebase.auth().currentUser.uid; // Obtém o ID do usuário atual
   
@@ -112,11 +112,26 @@ function BuscarFiltro() {
           card.setAttribute('class', 'todo-card');
           card.setAttribute('id', book.key);
 
-          // Imagem do livro
-          const imgLi = document.createElement('img');
-          imgLi.src = book.imgUrl || 'placeholder.jpg';
-          imgLi.setAttribute('class', 'imgTodo');
-          card.appendChild(imgLi);
+// Adiciona imagem do livro
+      // Adiciona uma imagem padrão enquanto a imagem real é carregada
+      const imgLi = document.createElement('img');
+      const defaultImg = 'img/loading.gif'; // Caminho para sua imagem padrão
+      imgLi.src = defaultImg; // Define a imagem padrão inicialmente
+      imgLi.setAttribute('class', 'imgTodo');
+      imgLi.setAttribute('id', `img-${book.key}`);
+
+      // Troca para a imagem real após o carregamento
+      const realImgUrl = book.imgUrl; // URL da imagem real
+      const imgLoader = new Image(); // Cria um pré-carregador para a imagem real
+      imgLoader.onload = function () {
+        imgLi.src = realImgUrl; // Substitui a imagem padrão pela imagem real
+      };
+      imgLoader.onerror = function () {
+        console.error(`Erro ao carregar a imagem: ${realImgUrl}`);
+      };
+      imgLoader.src = realImgUrl; // Inicia o carregamento da imagem real
+
+      card.appendChild(imgLi);
 
           // Nome do livro
           const title = document.createElement('h3');
@@ -339,6 +354,12 @@ function fillTodoList(tasks) {
           updateBtn.setAttribute('class', 'alternative');
           actions.appendChild(updateBtn);
 
+          const indexBtn = document.createElement('button');
+          indexBtn.textContent = 'Indicar';
+          indexBtn.setAttribute('onclick', `indexBook("${task.key}")`);
+          indexBtn.setAttribute('class', 'alternative');
+          actions.appendChild(indexBtn);
+
           card.appendChild(actions);
       }
 
@@ -453,7 +474,7 @@ function fetchAndFillHighlights() {
       const tasksArray = Object.keys(allTasks).map(key => ({ key, ...allTasks[key] }));
 
       if (tasksArray.length === 0) {
-        console.error("Nenhuma tarefa válida encontrada no banco de dados.");
+        console.error("Nenhuma livro válida encontrada no banco de dados.");
         return;
       }
 
@@ -461,7 +482,7 @@ function fetchAndFillHighlights() {
       fillHighlightsFromFirebase(tasksArray);
     })
     .catch((error) => {
-      console.error("Erro ao buscar tarefas do Firebase:", error);
+      console.error("Erro ao buscar livros do Firebase:", error);
     });
 }
 
@@ -723,6 +744,113 @@ sortedDonors.forEach(([donor, { count, photo }]) => {
 // }
 
 
+// historico de leitura do usuario
+function HistoricoDeLeitura(){
+  const userId = firebase.auth().currentUser.uid; // Obtém o ID do usuário atual 
+  RentedBooksList.innerHTML = '';
+  let num = 0; // Inicializa o contador
+
+  dbRefUsers.child('tasks')
+    .once('value')
+    .then((snapshot) =>{
+      const allBooks = snapshot.val()
+      const filteredBooks = []
+
+      for (const key in allBooks) {
+        const book = allBooks[key];
+        const rentalHistory = book.rentalHistory;
+      
+        // Verifica se rentalHistory existe e é um objeto
+        if (rentalHistory && typeof rentalHistory === 'object') {
+          for (const historyKey in rentalHistory) {
+            const rentalEntry = rentalHistory[historyKey];
+            
+            // Verifica se o rentedById corresponde ao userId
+            if (rentalEntry.rentedById === userId) {
+              filteredBooks.push({ ...book, key });
+              break; // Sai do loop interno, pois já encontramos o userId neste livro
+            }
+          }
+        }
+      }
+      
+
+            // Verifica se há livros alugados
+            if (filteredBooks.length > 0) {
+              filteredBooks.forEach((book) => {
+                // Criação do contêiner do card
+                const card = document.createElement('div');
+                card.setAttribute('class', 'todo-card');
+                card.setAttribute('id', book.key);
+      
+// Adiciona imagem do livro
+      // Adiciona uma imagem padrão enquanto a imagem real é carregada
+      const imgLi = document.createElement('img');
+      const defaultImg = 'img/loading.gif'; // Caminho para sua imagem padrão
+      imgLi.src = defaultImg; // Define a imagem padrão inicialmente
+      imgLi.setAttribute('class', 'imgTodo');
+      imgLi.setAttribute('id', `img-${book.key}`);
+
+      // Troca para a imagem real após o carregamento
+      const realImgUrl = book.imgUrl; // URL da imagem real
+      const imgLoader = new Image(); // Cria um pré-carregador para a imagem real
+      imgLoader.onload = function () {
+        imgLi.src = realImgUrl; // Substitui a imagem padrão pela imagem real
+      };
+      imgLoader.onerror = function () {
+        console.error(`Erro ao carregar a imagem: ${realImgUrl}`);
+      };
+      imgLoader.src = realImgUrl; // Inicia o carregamento da imagem real
+
+      card.appendChild(imgLi);
+      
+                // Nome do livro
+                const title = document.createElement('h3');
+                title.textContent = book.name || 'Sem Título';
+                card.appendChild(title);
+      
+                // Gênero do livro
+                const genre = document.createElement('p');
+                genre.textContent = 'Gênero: ' + (book.Genero || 'Indefinido');
+                card.appendChild(genre);
+      
+                // Informações do aluguel
+                if (book.rentalHistory && typeof book.rentalHistory === 'object') {
+                  // Pega a primeira entrada do rentalHistory
+                  const firstRentalKey = Object.keys(book.rentalHistory)[0];
+                  if (firstRentalKey) {
+                    const rentedAt = book.rentalHistory[firstRentalKey].rentedAt;
+                    if (rentedAt) {
+                      const rentedBy = document.createElement('p');
+                      rentedBy.textContent = `Alugado por você em: ${new Date(rentedAt).toLocaleDateString()}`;
+                      card.appendChild(rentedBy);
+                    } else {
+                      console.warn(`'rentedAt' não encontrado para o primeiro histórico do livro.`, book);
+                    }
+                  } else {
+                    console.warn(`Nenhuma entrada em 'rentalHistory' para o livro.`, book);
+                  }
+                } else {
+                  console.warn(`'rentalHistory' ausente ou inválido para o livro.`, book);
+                }
+                
+      
+      
+                RentedBooksList.appendChild(card);
+                num++; // Incrementa o contador para cada livro alugado
+              });
+      
+              // Exibe a contagem de livros alugados no momento
+              RentCount.innerHTML = `${num} ${num > 1 ? 'Livros alugados' : 'Livro alugado'} por você:`;
+            } else {
+              RentCount.innerHTML = 'Você não ainda não leu algum livro.';
+            }
+    })
+}
+
+
+
+
 // Exibe para o usuário quais são os livros que ele tem alugados no momento
 function fillRentedBooksList() {
   const userId = firebase.auth().currentUser.uid; // Obtém o ID do usuário atual
@@ -753,11 +881,26 @@ function fillRentedBooksList() {
           card.setAttribute('class', 'todo-card');
           card.setAttribute('id', task.key);
 
-          // Imagem do livro
-          const imgLi = document.createElement('img');
-          imgLi.src = task.imgUrl || 'placeholder.jpg'; // Exibe imagem ou um placeholder
-          imgLi.setAttribute('class', 'imgTodo');
-          card.appendChild(imgLi);
+// Adiciona imagem do livro
+      // Adiciona uma imagem padrão enquanto a imagem real é carregada
+      const imgLi = document.createElement('img');
+      const defaultImg = 'img/loading.gif'; // Caminho para sua imagem padrão
+      imgLi.src = defaultImg; // Define a imagem padrão inicialmente
+      imgLi.setAttribute('class', 'imgTodo');
+      imgLi.setAttribute('id', `img-${task.key}`);
+
+      // Troca para a imagem real após o carregamento
+      const realImgUrl = task.imgUrl; // URL da imagem real
+      const imgLoader = new Image(); // Cria um pré-carregador para a imagem real
+      imgLoader.onload = function () {
+        imgLi.src = realImgUrl; // Substitui a imagem padrão pela imagem real
+      };
+      imgLoader.onerror = function () {
+        console.error(`Erro ao carregar a imagem: ${realImgUrl}`);
+      };
+      imgLoader.src = realImgUrl; // Inicia o carregamento da imagem real
+
+      card.appendChild(imgLi);
 
           // Nome do livro
           const title = document.createElement('h3');
@@ -831,11 +974,26 @@ function MyDonateBooks() {
           card.setAttribute('class', 'todo-card');
           card.setAttribute('id', task.key);
 
-          // Imagem do livro
-          const imgLi = document.createElement('img');
-          imgLi.src = task.imgUrl || 'placeholder.jpg'; // Exibe imagem ou um placeholder
-          imgLi.setAttribute('class', 'imgTodo');
-          card.appendChild(imgLi);
+// Adiciona imagem do livro
+      // Adiciona uma imagem padrão enquanto a imagem real é carregada
+      const imgLi = document.createElement('img');
+      const defaultImg = 'img/loading.gif'; // Caminho para sua imagem padrão
+      imgLi.src = defaultImg; // Define a imagem padrão inicialmente
+      imgLi.setAttribute('class', 'imgTodo');
+      imgLi.setAttribute('id', `img-${task.key}`);
+
+      // Troca para a imagem real após o carregamento
+      const realImgUrl = task.imgUrl; // URL da imagem real
+      const imgLoader = new Image(); // Cria um pré-carregador para a imagem real
+      imgLoader.onload = function () {
+        imgLi.src = realImgUrl; // Substitui a imagem padrão pela imagem real
+      };
+      imgLoader.onerror = function () {
+        console.error(`Erro ao carregar a imagem: ${realImgUrl}`);
+      };
+      imgLoader.src = realImgUrl; // Inicia o carregamento da imagem real
+
+      card.appendChild(imgLi);
 
           // Nome do livro
           const title = document.createElement('h3');
@@ -985,7 +1143,154 @@ function MyDonateBooks() {
 //     })
 // }
 
+// função para indicar livro 
+function indexBook(key, name ){
+  const userId = firebase.auth().currentUser.uid;
+  const userName = firebase.auth().currentUser.displayName;
+  const user = firebase.auth().currentUser;
 
+  const indexData = {
+    indexBy: userName,
+    indexById: userId,
+    indexByImg: user.photoURL,
+    indexAt:new Date().toISOString(),
+  };
+
+  dbRefUsers.child(`tasks/${key}/Indexed`).once('value').then((snapshot)=>{
+    if(snapshot.exists()){
+      alert('esse livro ja está indicado')
+    }else{
+      dbRefUsers.child(`tasks/${key}/Indexed`).set(indexData).then(()=>{
+        dbRefUsers.child(`tasks/${key}/indexed`).push(indexData)
+        alert('livro indicado com sucesso')
+      }).catch(error =>{
+        alert('erro ao indexar o livro', error)
+      })
+    }
+  }).catch(error =>{
+    alert('erro ao verificar se o livro ja esta indexado', error)
+  })
+}
+
+// função para mostrar os livros indicados
+function fillIndex(){
+  dbRefUsers.child('tasks').once('value').then((snapshot)=>{
+    const indexBooks = snapshot.val();
+    const filteredBooks = []
+    indexedBooks.innerHTML ='';
+    let num =0;
+
+
+    for (const key in indexBooks) {
+      const book = indexBooks[key];
+    
+      // Verifica se o campo "indexed" existe e possui entradas.
+      if (book.indexed && typeof book.indexed === 'object') {
+        for (const indexKey in book.indexed) {
+          const indexEntry = book.indexed[indexKey];
+    
+          // Verifica se a entrada "indexed" é válida.
+          if (indexEntry.indexAt) {
+            filteredBooks.push({ ...book, key });
+            break; // Sai do loop interno após encontrar uma entrada válida.
+          }
+        }
+      }
+    }
+    console.log(filteredBooks);
+    // verifica se existe livros indicados
+    if(filteredBooks.length>0){
+      filteredBooks.forEach((book)=>{
+                        // Criação do contêiner do card
+                        const card = document.createElement('div');
+                        card.setAttribute('class', 'todo-card');
+                        card.setAttribute('id', book.key);
+              
+        // Adiciona imagem do livro
+              // Adiciona uma imagem padrão enquanto a imagem real é carregada
+              const imgLi = document.createElement('img');
+              const defaultImg = 'img/loading.gif'; // Caminho para sua imagem padrão
+              imgLi.src = defaultImg; // Define a imagem padrão inicialmente
+              imgLi.setAttribute('class', 'imgTodo');
+              imgLi.setAttribute('id', `img-${book.key}`);
+        
+              // Troca para a imagem real após o carregamento
+              const realImgUrl = book.imgUrl; // URL da imagem real
+              const imgLoader = new Image(); // Cria um pré-carregador para a imagem real
+              imgLoader.onload = function () {
+                imgLi.src = realImgUrl; // Substitui a imagem padrão pela imagem real
+              };
+              imgLoader.onerror = function () {
+                console.error(`Erro ao carregar a imagem: ${realImgUrl}`);
+              };
+              imgLoader.src = realImgUrl; // Inicia o carregamento da imagem real
+        
+              card.appendChild(imgLi);
+              
+                        // Nome do livro
+                        const title = document.createElement('h3');
+                        title.textContent = book.name || 'Sem Título';
+                        card.appendChild(title);
+              
+                        // Gênero do livro
+                        const genre = document.createElement('p');
+                        genre.textContent = 'Gênero: ' + (book.Genero || 'Indefinido');
+                        card.appendChild(genre);
+
+
+                        const userId = firebase.auth().currentUser.uid;
+                        if (userId === '60ATcph6xShfJB7wfqFxBIGaZp32') {
+                            const actions = document.createElement('div');
+                            actions.setAttribute('class', 'actions');
+            
+                  
+                            const indexBtn = document.createElement('button');
+                            indexBtn.textContent = 'Remover indicação';
+                            indexBtn.setAttribute('onclick', `unindexBook("${book.key}")`);
+                            indexBtn.setAttribute('class', 'alternative');
+                            actions.appendChild(indexBtn);
+                  
+                            card.appendChild(actions);
+                        }          
+              
+                        indexedBooks.appendChild(card)
+                        num++;
+      })
+    }else{
+      console.log('nao temos livros indicados no momento')
+    }
+})}
+
+// função para remover a indicação
+function unindexBook(key) {
+  const dbRefUsers = firebase.database().ref('users');
+
+  dbRefUsers.child(`tasks/${key}/Indexed`).once('value').then((snapshot) => {
+    if (!snapshot.exists()) {
+      alert('Esse livro não está indexado.');
+    } else {
+      // Remove o dado principal de "Indexed".
+      dbRefUsers.child(`tasks/${key}/Indexed`).remove().then(() => {
+        alert('Indexação do livro removida com sucesso.');
+      }).catch(error => {
+        alert('Erro ao remover a indexação principal do livro.', error);
+      });
+
+      // Remove as entradas individuais de "indexed".
+      dbRefUsers.child(`tasks/${key}/indexed`).remove().then(() => {
+        console.log('Entradas adicionais de indexação removidas com sucesso.');
+      }).catch(error => {
+        console.error('Erro ao remover as entradas adicionais de indexação.', error);
+      });
+    }
+  }).catch(error => {
+    alert('Erro ao verificar se o livro está indexado.', error);
+  });
+}
+
+
+
+// função para alugar livro
 function rentBook(key, name) {
   const userId = firebase.auth().currentUser.uid;
   const userName = firebase.auth().currentUser.displayName;
@@ -1137,6 +1442,7 @@ function updateTodo(key){
   hideItem(submitTodoForm)
   showItem(cancelUpdateTodo)
   hideItem(todoList)
+  showItem(todoForm)
 }
 
 // restaura o estado inicial do formulario

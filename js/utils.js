@@ -35,7 +35,8 @@ var footerr = document.getElementById('footerr')
 
 var DestaquesMega = document.getElementById('DestaquesMega')
 var updatePhoto =document.getElementById('updatePhoto')
-
+var  pagination = document.getElementById('pagination-controls')
+var indexedBooks = document.getElementById('indexedBooks')
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
   authForm.submitAuthForm.innerHTML = 'Cadastrar conta'
@@ -108,6 +109,7 @@ getDefaultTodoList()
 // metodo novo para mostrar todas as tarefas iterando por todos os usuarios
 search.onkeyup = function () {
   if (search.value !== '') {
+    hideItem(pagination)
     const searchValue = search.value.toLowerCase(); // Mantém o valor exato da pesquisa
     console.log('Pesquisa iniciada:', searchValue);
 
@@ -138,6 +140,7 @@ search.onkeyup = function () {
       });
   } else {
     getDefaultTodoList(); // Retorna à lista padrão quando o campo de pesquisa estiver vazio
+    showItem(pagination)
   }
 };
 
@@ -159,6 +162,7 @@ function getDefaultTodoList() {
 
     // Passa as tarefas para a função fillTodoList
     fillTodoList(tasks);
+    showItem(pagination)
   });
 }
 
@@ -216,8 +220,15 @@ function Destaques(){
   hideItem(userInfo)
   fetchAndFillHighlights()
   fillHighlightsFromFirebase()
+  fillIndex()
 }
 
+function começarLeitura(){
+  hideItem(DestaquesMega)
+  hideItem(todoForm)
+  hideItem(userInfo)
+  showItem(todoList)
+}
 
 function DoarLivros(){
   showItem(todoForm)

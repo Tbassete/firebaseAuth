@@ -35,16 +35,20 @@
             <img id="userImg" >
             <p >Meu perfil</p>
           </li>
-          <li class="nav-item" id="divDoarLivros" onclick="DoarLivros()">
+          <li class="nav-item" id="divDoarLivros" onclick="começarLeitura()">      
             <img src="img/openbook.svg" alt="">
+            <p>Começar a ler</p>
+          </li>
+          <li class="nav-item" id="divDoarLivros" onclick="DoarLivros()">
+            <img src="img/livros.png" alt="">
             <p>Doar livros</p>
           </li>
+
 
           <li class="nav-item" id="divDoarLivros" onclick="Destaques()">      
             <img src="img/destaques.png" alt="">
             <p>Destaques</p>
           </li>
-          
 
         </ul>
 
@@ -133,6 +137,7 @@
         <button class="alternative" onclick="signOut()"> LogOut</button>
         <button onclick="fillRentedBooksList()">Livros alugados</button>
         <button onclick="MyDonateBooks()">Meus livros doados</button>
+        <button onclick="HistoricoDeLeitura()">Histórico de leitura</button>
         
         
       </div>
@@ -177,13 +182,8 @@
           </section>
           <section class="highlight featured-book">
             <h2>🌟 Livro Indicado do Mês</h2>
-            <div class="featured-book-content">
-              <img src="livro-indicado.jpg" alt="Capa do Livro Indicado">
-              <div>
-                <h3>Título do Livro</h3>
-                <p>Autor: Nome do Autor</p>
-                <p>Descrição: Este é um resumo incrível sobre o livro indicado do mês. Não perca a leitura!</p>
-              </div>
+            <div class="featured-book-content" id="indexedBooks">
+
             </div>
           </section>
         </main>
@@ -198,6 +198,7 @@
 
           <label for="FiltroGeneros" > 
             <select name="" id="FiltroGeneros">
+              <option value="" selected></option>
               <option value="Contabilidade"> Contabilidade</option>
               <option value="Religioso / Espiritualidade">Religioso / Espiritualidade</option>
               <option value="Geopolitica / literatura brasileira">Geopolitica / literatura brasileira</option>
@@ -207,6 +208,8 @@
             </select>
             <button type="button" onclick="BuscarFiltro()" class="FiltroGeneros">Filtrar</button>
           </label>
+
+          <button class="alternative" onclick="getDefaultTodoList()">Exibir todos os livros</button>
           
         </div>
         <hr>

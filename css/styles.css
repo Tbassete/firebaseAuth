@@ -34,6 +34,7 @@ body {
 }
 
 #NavHeader{
+  font-size: 1.8em;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -156,7 +157,7 @@ input:focus {
   justify-content: center;
   align-items: center;
   & img{
-    width: 30px;
+    width: 50px;
   }
 }
 #MyProfile {
@@ -166,8 +167,8 @@ justify-content: center;
 align-items: center;
 
 & img{
-  width: 30px;
-  height: 30px;
+  width: 60px;
+  height: 60px;
 }
 }
 
@@ -195,8 +196,8 @@ align-items: center;
 
 #userImg {
   cursor: pointer;
-  height: 70px;
-  width: 70px;
+  height: 90px;
+  width: 90px;
   border-radius: 50%;
 }
 #RentedBooksList{
@@ -225,6 +226,9 @@ align-items: center;
   object-fit: cover;
 }
 
+#auth{
+  font-size: 2em;
+}
 /* List */
 ul {
   list-style-type: none;
@@ -419,19 +423,20 @@ footer .social-icons a {
 /* destaques */
 
 .highlights-container {
+  font-size: 2.0em;
   display: grid;
   gap: 1.5rem;
   max-width: 1200px;
   margin: 2rem auto;
   padding: 0 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
 }
 
 .highlight {
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
+  padding: 2.5rem;
   transition: transform 0.2s ease-in-out;
 }
 
@@ -440,7 +445,8 @@ footer .social-icons a {
 }
 
 .highlight h2 {
-  color: #4CAF50;
+  font-size: 1.8em;
+  color: #054166;
   margin-bottom: 1rem;
 }
 
@@ -458,14 +464,17 @@ footer .social-icons a {
 }
 
 .featured-book-content {
+  & h3{
+    font-size: 1em;
+  }
   display: flex;
   gap: 1rem;
   align-items: flex-start;
 }
 
 .featured-book-content img {
-  width: 100px;
-  height: 150px;
+ max-width: 300px;
+  height: auto;
   object-fit: cover;
   border-radius: 8px;
 }
