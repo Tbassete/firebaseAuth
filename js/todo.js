@@ -184,7 +184,7 @@ function BuscarFiltro() {
                   if (rental) {
                       // Mostra quem está alugando
                       const rentedBy = document.createElement('p');
-                      rentedBy.textContent = `Alugado no momento por: ${rental.rentedBy}`;
+                      rentedBy.textContent = `Reservado no momento por: ${rental.rentedBy}`;
                       card.appendChild(rentedBy); // Exibe diretamente no card
 
                       // Se o usuário atual alugou o livro, mostra o botão de devolver
@@ -374,7 +374,7 @@ function fillTodoList(tasks) {
                     if (rental) {
                         // Mostra quem está alugando
                         const rentedBy = document.createElement('p');
-                        rentedBy.textContent = `Alugado no momento por: ${rental.rentedBy}`;
+                        rentedBy.textContent = `Reservado no momento por: ${rental.rentedBy}`;
                         card.appendChild(rentedBy); // Exibe diretamente no card
 
                         // Se o usuário atual alugou o livro, mostra o botão de devolver
@@ -1013,7 +1013,7 @@ function MyDonateBooks() {
           // Botão para editar detalhes do livro doado
           const editBtn = document.createElement('button');
           editBtn.textContent = 'Editar';
-          editBtn.setAttribute('onclick', `editBookDetails("${task.key}")`);
+          editBtn.setAttribute('onclick', `updateTodo("${task.key}")`);
           editBtn.setAttribute('class', 'edit');
           card.appendChild(editBtn);
 
@@ -1312,14 +1312,14 @@ function rentBook(key, name) {
   dbRefUsers.child(`tasks/${key}/currentRental`).once('value')
     .then(snapshot => {
       if (snapshot.exists()) {
-        alert('Este livro já está alugado.');
+        alert('Este livro já está reservado.');
       } else {
         // Marca como alugado
         dbRefUsers.child(`tasks/${key}/currentRental`).set(rentalData)
           .then(() => {
             // Adiciona ao histórico
             dbRefUsers.child(`tasks/${key}/rentalHistory`).push(rentalData);
-            alert('Livro alugado com sucesso!');
+            alert('Livro reservado com sucesso!');
           })
           .catch(error => {
             console.error('Erro ao marcar o livro como alugado:', error);

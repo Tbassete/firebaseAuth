@@ -37,6 +37,7 @@ var DestaquesMega = document.getElementById('DestaquesMega')
 var updatePhoto =document.getElementById('updatePhoto')
 var  pagination = document.getElementById('pagination-controls')
 var indexedBooks = document.getElementById('indexedBooks')
+var buscar = document.getElementById('buscar')
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
   authForm.submitAuthForm.innerHTML = 'Cadastrar conta'
