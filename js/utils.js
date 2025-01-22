@@ -12,6 +12,7 @@ var sendEmailVerificationDiv = document.getElementById('sendEmailVerificationDiv
 var emailVerified = document.getElementById('emailVerified')
 var passwordReset = document.getElementById('passwordReset')
 var userImg = document.getElementById('userImg')
+var userImg2 =document.getElementById('userImg2')
 var userName = document.getElementById('userName')
 var todoForm = document.getElementById('todoForm')
 var todoCount = document.getElementById('todoCount')
@@ -69,18 +70,28 @@ function hideItem(element) {
 //mostrar conetudo para usuarios authenticated
 function showUserContent(user){
   if(user.providerData[0].providerId != 'password'){
-    emailVerified.innerHTML='email verificado'
+    emailVerified.innerHTML = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
+    <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+  </svg>
+`;
+
     hideItem(sendEmailVerificationDiv)
   }else{
     if(user.emailVerified){
-      emailVerified.innerHTML='email verificado'
+      emailVerified.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
+        <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+      </svg>
+    `;
+    
       hideItem(sendEmailVerificationDiv)
     }else{
       emailVerified.innerHTML='autentique o seu email'
       showItem(sendEmailVerificationDiv)
     }
   }
-
+  userImg2.src = user.photoURL ? user.photoURL : 'img/unknownUser.png'
   userImg.src = user.photoURL ? user.photoURL : 'img/unknownUser.png'
   userName.innerHTML = user.displayName
   userEmail.innerHTML= user.email
@@ -249,6 +260,27 @@ var actionCodeSettings = {
   url: 'https://megatecabrasil.web.app/'
   // ur: 'https://127.0.0.1'
 }
+
+
+// configurações da nav do header
+
+
+// Seleciona o menu colapsável e os itens de navegação
+const navbarCollapse = document.getElementById('navbarsExampleXxl');
+const navItems = document.querySelectorAll('#ulHeader .nav-item');
+
+// Adiciona um evento de clique a cada item do menu
+navItems.forEach((item) => {
+  item.addEventListener('click', () => {
+    // Verifica se o menu está aberto
+    if (navbarCollapse.classList.contains('show')) {
+      // Fecha o menu removendo a classe 'show'
+      const bootstrapCollapse = new bootstrap.Collapse(navbarCollapse);
+      bootstrapCollapse.hide();
+    }
+  });
+});
+
 
 var database = firebase.database()
 var dbRefUsers = database.ref('users')

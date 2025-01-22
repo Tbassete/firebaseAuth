@@ -169,9 +169,8 @@ header{
 
 
         
-  }
-
-  ul :hover{
-    background-color: rgba(193, 193, 193, 0.203);
-    border-radius: 20px
+        ul :hover{
+          background-color: rgba(193, 193, 193, 0.203);
+          border-radius: 20px
+        }
   }
