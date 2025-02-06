@@ -1,0 +1,31 @@
+{
+  "rules": {
+    "users": {
+      "$userId": {
+        ".read": "$userId === auth.uid",
+        ".write": "$userId === auth.uid"
+      }
+    },
+    "tasks": {
+      "$taskId": {
+        ".read": "auth != null",
+        ".write": "auth != null && data.child('userIdDoador').val() === auth.uid",
+        "rentalHistory": {
+          "$historyId": {
+            ".read": "auth != null",
+            ".write": "auth != null && data.child('rentedById').val() === auth.uid"
+          }
+        }
+      }
+    }
+  }
+}
+
+old
+
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
