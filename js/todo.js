@@ -12,6 +12,8 @@
 //             console.log(error)
 //         })
 
+
+
 //         todoForm.name.value = ''
 //     }else{
 //         alert('o nome da tarefa nao pode estar vazio')
@@ -292,8 +294,146 @@ function fillTodoList(tasks) {
       // Criação do contêiner do card
       const card = document.createElement('div');
       card.setAttribute('class', 'todo-card');
-      card.setAttribute('id', task.key);
+      // card.setAttribute('id', task.key);
 
+      
+
+// Criar botão para exibir resenhas
+const btnMostrarResenhas = document.createElement('button');
+btnMostrarResenhas.textContent = 'Mostrar Resenhas';
+btnMostrarResenhas.setAttribute('class', 'btn-mostrar-resenhas');
+card.appendChild(btnMostrarResenhas);
+
+// Criar a div das resenhas (inicialmente vazia e oculta)
+const resenhasContainer = document.createElement('div');
+resenhasContainer.setAttribute('class', 'resenhaDiv');
+resenhasContainer.setAttribute('id', 'resenhasContainer');
+resenhasContainer.style.display = 'none'; // Oculta a div inicialmente
+card.appendChild(resenhasContainer);
+
+// Evento de clique para carregar as resenhas
+btnMostrarResenhas.addEventListener('click', () => {
+  // Exibe a div ao clicar
+  resenhasContainer.style.display = 'block';
+
+  // Verifica se já carregou para evitar requisições duplicadas
+  if (resenhasContainer.children.length > 0) return;
+
+  // Consultar o banco de dados
+  dbRefUsers.child(`tasks/${task.key}/resenhas`).once('value')
+    .then(snapshot => {
+      if (snapshot.exists() && snapshot.hasChildren()) { 
+        snapshot.forEach(snapshot => {
+
+          const allBooks = snapshot.val();
+          const filteredBooks = [];
+          const userId = firebase.auth().currentUser.uid; // Obtém o ID do usuário logado
+      
+          // for (const key in allBooks) {
+          //   const book = allBooks[key];
+          //   const rentalHistory = book.rentalHistory;
+      
+          //   // Verifica se o usuário já leu o livro ou se ele é o doador
+          //   var hasRead = true;
+          //   var isDonor = book.donatedById === userId; // Verifica se é o doador
+          //   var isDonorOK =true
+          //   // if (rentalHistory && typeof rentalHistory === 'object') {
+          //   //   for (const historyKey in rentalHistory) {
+          //   //     const rentalEntry = rentalHistory[historyKey];
+      
+          //   //     if (rentalEntry.rentedById === userId) {
+          //   //       hasRead = true;
+          //   //       console.log('ja leu')
+          //   //       break; // Sai do loop interno, pois já encontrou o userId
+          //   //     }
+          //   //     if(isDonor){
+          //   //       isDonorOK = true;
+          //   //       console.log('é o doador')
+          //   //       break;
+          //   //     }
+          //   //   }
+          //   // }else{
+          //   //   console.log("nao passou na primeira logica")
+          //   // }
+          // }
+
+          // if(isDonorOK||hasRead){
+          //   const btnPostarResenha = document.createElement('button');
+          //   btnPostarResenha.textContent = 'Postar Resenha';
+          //   btnPostarResenha.setAttribute('class', 'btn-postar-resenha');
+          //   btnPostarResenha.addEventListener('click', () => {
+          //     sentResenha(task.key);
+          //   });
+          // }
+
+
+
+          const resenhaData = snapshot.val();
+          // Criando elementos dinamicamente
+          const resenhaDiv = document.createElement('div');
+          resenhaDiv.classList.add('resenha-item');
+
+          resenhaDiv.innerHTML = `
+            <div class="resenha-header">
+              <img src="${resenhaData.resenhaByImg}" alt="User Image" class="userImg3">
+              <strong>${resenhaData.resenhaBy}</strong>
+              <span class="resenha-date">${new Date(resenhaData.resenhaAt).toLocaleString()}</span>
+            </div>
+            <p class="resenha-text">${resenhaData.resenha}</p>`;
+
+          resenhasContainer.appendChild(resenhaDiv);
+          
+
+        });
+
+        console.log('passou aqui');
+        const btnPostarResenha = document.createElement('button');
+        btnPostarResenha.textContent = 'Postar Resenha';
+        btnPostarResenha.setAttribute('class', 'btn-postar-resenha');
+        btnPostarResenha.addEventListener('click', () => {
+          sentResenha(task.key);
+        });
+
+        const resenhaForm = document.createElement('form')
+        resenhaForm.setAttribute('id', `resenhaForm/${task.key}`)
+        const TxtResenha = document.createElement('input')
+        TxtResenha.setAttribute('id', `TextResenha/${task.key}`)
+        resenhaForm.appendChild(TxtResenha)
+        card.appendChild(resenhaForm)
+        card.appendChild(btnPostarResenha);
+
+      } else {
+        console.log('passou aqui');
+        const btnPostarResenha = document.createElement('button');
+        btnPostarResenha.textContent = 'Postar Resenha';
+        btnPostarResenha.setAttribute('class', 'btn-postar-resenha');
+        btnPostarResenha.addEventListener('click', () => {
+          sentResenha(task.key);
+        });
+
+        const resenhaForm = document.createElement('form')
+        resenhaForm.setAttribute('id', `resenhaForm/${task.key}`)
+        const TxtResenha = document.createElement('input')
+        TxtResenha.setAttribute('id', `TextResenha/${task.key}`)
+        resenhaForm.appendChild(TxtResenha)
+        card.appendChild(resenhaForm)
+        card.appendChild(btnPostarResenha);
+
+
+        resenhasContainer.innerHTML = `<p>Sem resenhas disponíveis.</p>`;
+      }    
+
+    })
+    .catch(error => {
+      console.error('Erro ao carregar resenhas:', error);
+    });
+});
+
+                  
+
+      
+
+      
       // Adiciona imagem do livro
       // Adiciona uma imagem padrão enquanto a imagem real é carregada
       const imgLi = document.createElement('img');
@@ -1288,6 +1428,73 @@ function unindexBook(key) {
   });
 }
 
+// // função para mostrar as resenhas
+// function showResenha(key, name) {
+//   const resenhasContainer = document.getElementById('resenhasContainer');
+//   resenhasContainer.innerHTML = ''; // Limpa o conteúdo antes de carregar novas resenhas
+//   showItem(formResenha)
+//   dbRefUsers.child(`tasks/${key}/resenhas`).once('value')
+//     .then(snapshot => {
+//       if (snapshot.exists()) {
+//         snapshot.forEach(childSnapshot => {
+//           const resenhaData = childSnapshot.val();
+
+//           // Criando elementos dinamicamente
+//           const resenhaDiv = document.createElement('div');
+//           resenhaDiv.classList.add('resenha-item');
+
+//           resenhaDiv.innerHTML = `
+//             <div class="resenha-header">
+//               <img src="${resenhaData.resenhaByImg}" alt="User Image" class="resenha-avatar">
+//               <strong>${resenhaData.resenhaBy}</strong>
+//               <span class="resenha-date">${new Date(resenhaData.resenhaAt).toLocaleString()}</span>
+//             </div>
+//             <p class="resenha-text">${resenhaData.resenha}</p>`;
+//           resenhasContainer.appendChild(resenhaDiv);
+//         });
+//       } else {
+//         resenhasContainer.innerHTML = `<p>Sem resenhas disponíveis.</p>`;
+//       }
+//     })
+//     .catch(error => {
+//       console.error('Erro ao carregar resenhas:', error);
+//     });
+    
+// }
+
+
+
+
+
+// função para publicar resenha
+function sentResenha(key, name) {
+  const user = firebase.auth().currentUser;
+  const userId = user.uid;
+
+  const TxtResenha = document.getElementById(`TextResenha/${key}`).value; // Obtém o valor do input corretamente
+
+  if (!TxtResenha.trim()) {
+    alert("Por favor, escreva uma resenha antes de postar.");
+    return;
+  }
+
+  const resenhaData = {
+    resenhaBy: user.displayName,
+    resenhaById: userId,
+    resenhaByImg: user.photoURL,
+    resenhaAt: new Date().toISOString(),
+    resenha: TxtResenha, // Agora está pegando o valor do input corretamente
+  };
+
+  dbRefUsers.child(`tasks/${key}/resenhas`).push(resenhaData)
+    .then(() => {
+      alert('Resenha publicada com sucesso');
+      document.getElementById(`TextResenha/${key}`).value = ""; // Limpa o campo após postar
+    })
+    .catch(error => {
+      console.error('Erro ao postar a resenha:', error);
+    });
+}
 
 
 // função para alugar livro

@@ -39,6 +39,11 @@ var updatePhoto =document.getElementById('updatePhoto')
 var  pagination = document.getElementById('pagination-controls')
 var indexedBooks = document.getElementById('indexedBooks')
 var buscar = document.getElementById('buscar')
+var LogOut = document.getElementById('LogOut')
+
+var formResenha = document.getElementById('formResenha')
+
+
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
   authForm.submitAuthForm.innerHTML = 'Cadastrar conta'
@@ -220,6 +225,7 @@ function showProfile(){
   hideItem(todoList)
   hideItem(todoForm)
   hideItem(DestaquesMega)
+  hideItem(LogOut)
   fillRentedBooksList()
 }
 
@@ -253,6 +259,14 @@ function closeDoarLivros(){
   showItem(todoList)
   hideItem(todoForm)
 }
+
+function CallSigOut(){
+  showItem(LogOut)
+}
+
+function cancel(){
+  hideItem(LogOut)
+  }
 //atributos extras de verificação de auth
 
 var actionCodeSettings = {

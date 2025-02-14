@@ -36,6 +36,7 @@ function signOut(){
     firebase.auth().signOut().catch(function(error){
         showError('erro ao sair '+ error)
     })
+    hideItem(LogOut)
 }
 
 //envia email de verificicação
