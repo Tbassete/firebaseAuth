@@ -50,9 +50,27 @@
             <p>Destaques</p>
           </li>
           
+          <li>
 
+          </li>
+          
         </ul>
+        <div id="divFiltros">
+          <label for="FiltroGeneros" > 
+            <select name="" id="FiltroGeneros">
+              <option value="" selected></option>
+              <option value="Contabilidade"> Contabilidade</option>
+              <option value="Religioso / Espiritualidade">Religioso / Espiritualidade</option>
+              <option value="Geopolitica / literatura brasileira">Geopolitica / literatura brasileira</option>
+              <option value="Ficção" >Ficção</option>
+              <option value="Romance">Romance</option>
+              <option value="Auto ajuda / desenvolvimento">Auto ajuda / desenvolvimento</option>
+            </select>
+            <button type="button" onclick="BuscarFiltro()" class="FiltroGeneros">Filtrar</button>
+            <button class="alternative" onclick="getDefaultTodoList()">Exibir todos os livros</button>
+          </label>
 
+          </div>
       </div>
     </div>
   </nav>
@@ -60,12 +78,20 @@
 
   <div id="app">
 
-      
+    <div id="resenhasContainer" class="" >
+
+      <div id="resenhaPopup" class="resenha-popup">
+        <button class="close-btn" onclick="fecharPopup()">×</button>
+        <div id="resenhaDiv"></div>
+      </div>
+        
+    </div>
+
     <!--Conteúdo destinado para usuários não autenticados-->
     <div id="auth" >
       <section id="login">
       <div id="imgAuth">
-
+        
       </div>
 
       <div id="formulario">
@@ -121,8 +147,10 @@
     <div id="userContent" class="startHidden">
 
       
-
+      
       <div id="userInfo" class="startHidden" >
+
+        
 
         <div id="userInfoCss">
 
@@ -252,25 +280,15 @@
        
       <!-- exibir lista de tarefas -->
        <div id="todoList">
+
         <div id="buscar" class="center">
-          <label for="search">Buscar:</label>
-          <input type="text" placeholder="buscar" id="search">
+          <div id="buscar4">
+            <label for="search"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+            </svg></label>
+            <input type="text" placeholder="buscar" id="search">
+          </div>
 
-          <label for="FiltroGeneros" > 
-            <select name="" id="FiltroGeneros">
-              <option value="" selected></option>
-              <option value="Contabilidade"> Contabilidade</option>
-              <option value="Religioso / Espiritualidade">Religioso / Espiritualidade</option>
-              <option value="Geopolitica / literatura brasileira">Geopolitica / literatura brasileira</option>
-              <option value="Ficção" >Ficção</option>
-              <option value="Romance">Romance</option>
-              <option value="Auto ajuda / desenvolvimento">Auto ajuda / desenvolvimento</option>
-            </select>
-            <button type="button" onclick="BuscarFiltro()" class="FiltroGeneros">Filtrar</button>
-          </label>
-
-          <button class="alternative" onclick="getDefaultTodoList()">Exibir todos os livros</button>
-          
         </div>
         <hr>
         <h3 id="todoCount">Carregando livros:</h3>

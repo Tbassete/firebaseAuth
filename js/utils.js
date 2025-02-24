@@ -42,8 +42,11 @@ var buscar = document.getElementById('buscar')
 var LogOut = document.getElementById('LogOut')
 
 var formResenha = document.getElementById('formResenha')
-
-
+var popUp = document.getElementById('popUp')
+var resenhasContainer = document.getElementById('resenhasContainer')
+var resenhaPopup = document.getElementById('resenhaPopup')
+var resenhaDiv = document.getElementById('resenhaDiv')
+var divFiltros = document.getElementById('divFiltros')
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
   authForm.submitAuthForm.innerHTML = 'Cadastrar conta'
@@ -226,6 +229,7 @@ function showProfile(){
   hideItem(todoForm)
   hideItem(DestaquesMega)
   hideItem(LogOut)
+  hideItem(divFiltros)
   fillRentedBooksList()
 }
 
@@ -236,6 +240,7 @@ function Destaques(){
   hideItem(todoList)
   hideItem(todoForm)
   hideItem(userInfo)
+  hideItem(divFiltros)
   fetchAndFillHighlights()
   fillHighlightsFromFirebase()
   fillIndex()
@@ -246,10 +251,12 @@ function começarLeitura(){
   hideItem(todoForm)
   hideItem(userInfo)
   showItem(todoList)
+  showItem(divFiltros)
 }
 
 function DoarLivros(){
   showItem(todoForm)
+  hideItem(divFiltros)
   hideItem(todoList)
   hideItem(userInfo)
   hideItem(DestaquesMega)
@@ -258,6 +265,7 @@ function DoarLivros(){
 function closeDoarLivros(){
   showItem(todoList)
   hideItem(todoForm)
+  showItem(divFiltros)
 }
 
 function CallSigOut(){
@@ -273,6 +281,28 @@ var actionCodeSettings = {
   // url: 'https://todo-13563.firebaseapp.com' //voltar para esse depois
   url: 'https://megatecabrasil.web.app/'
   // ur: 'https://127.0.0.1'
+}
+
+
+// abrir e fechar resenhas
+
+function abrirPopup() {
+  const resenhaPopup = document.getElementById('resenhaPopup');
+  if (resenhaPopup) {
+    resenhaPopup.classList.add('show');
+
+  } else {
+    console.error("Popup não encontrado no DOM!");
+  }
+}
+
+// Função para fechar popup
+function fecharPopup() {
+  const resenhaPopup = document.getElementById('resenhaPopup');
+  if (resenhaPopup) {
+
+    resenhaPopup.classList.remove('show');
+  }
 }
 
 

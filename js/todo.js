@@ -300,128 +300,250 @@ function fillTodoList(tasks) {
 
 // Criar botão para exibir resenhas
 const btnMostrarResenhas = document.createElement('button');
-btnMostrarResenhas.textContent = 'Mostrar Resenhas';
-btnMostrarResenhas.setAttribute('class', 'btn-mostrar-resenhas');
+// btnMostrarResenhas.textContent = 'Mostrar Resenhas';
+btnMostrarResenhas.setAttribute('class', 'btnMostrarResenhas');
 card.appendChild(btnMostrarResenhas);
 
-// Criar a div das resenhas (inicialmente vazia e oculta)
-const resenhasContainer = document.createElement('div');
-resenhasContainer.setAttribute('class', 'resenhaDiv');
-resenhasContainer.setAttribute('id', 'resenhasContainer');
-resenhasContainer.style.display = 'none'; // Oculta a div inicialmente
-card.appendChild(resenhasContainer);
-
 // Evento de clique para carregar as resenhas
-btnMostrarResenhas.addEventListener('click', () => {
-  // Exibe a div ao clicar
-  resenhasContainer.style.display = 'block';
+btnMostrarResenhas.addEventListener('click', async () => {
 
+  const divFormResenha = document.createElement('div')
+  divFormResenha.setAttribute('id', 'divFormResenha')
+  divFormResenha.innerHTML = ''
+  
+  resenhasContainer.innerHTML = ''
+  resenhaPopup.innerHTML = ''
+  resenhaDiv.innerHTML =''
   // Verifica se já carregou para evitar requisições duplicadas
   if (resenhasContainer.children.length > 0) return;
+
+    // Obtendo leitores antes de buscar resenhas
+    const user = firebase.auth().currentUser.uid
+    var leu = false;
+    const leitores = await hasRead(task.key, userId).then(hasRead => {
+      if (hasRead) {
+        console.log("o usuario ja leu este livro")
+        leu = true;
+      } else {
+        console.log("O usuário ainda não leu este livro.");
+        leu = false
+      }
+      // console.log(leu)
+    });
 
   // Consultar o banco de dados
   dbRefUsers.child(`tasks/${task.key}/resenhas`).once('value')
     .then(snapshot => {
       if (snapshot.exists() && snapshot.hasChildren()) { 
-        snapshot.forEach(snapshot => {
+        snapshot.forEach(childSnapshot => {
 
-          const allBooks = snapshot.val();
-          const filteredBooks = [];
-          const userId = firebase.auth().currentUser.uid; // Obtém o ID do usuário logado
-      
-          // for (const key in allBooks) {
-          //   const book = allBooks[key];
-          //   const rentalHistory = book.rentalHistory;
-      
-          //   // Verifica se o usuário já leu o livro ou se ele é o doador
-          //   var hasRead = true;
-          //   var isDonor = book.donatedById === userId; // Verifica se é o doador
-          //   var isDonorOK =true
-          //   // if (rentalHistory && typeof rentalHistory === 'object') {
-          //   //   for (const historyKey in rentalHistory) {
-          //   //     const rentalEntry = rentalHistory[historyKey];
-      
-          //   //     if (rentalEntry.rentedById === userId) {
-          //   //       hasRead = true;
-          //   //       console.log('ja leu')
-          //   //       break; // Sai do loop interno, pois já encontrou o userId
-          //   //     }
-          //   //     if(isDonor){
-          //   //       isDonorOK = true;
-          //   //       console.log('é o doador')
-          //   //       break;
-          //   //     }
-          //   //   }
-          //   // }else{
-          //   //   console.log("nao passou na primeira logica")
-          //   // }
-          // }
-
-          // if(isDonorOK||hasRead){
-          //   const btnPostarResenha = document.createElement('button');
-          //   btnPostarResenha.textContent = 'Postar Resenha';
-          //   btnPostarResenha.setAttribute('class', 'btn-postar-resenha');
-          //   btnPostarResenha.addEventListener('click', () => {
-          //     sentResenha(task.key);
-          //   });
-          // }
-
-
-
-          const resenhaData = snapshot.val();
-          // Criando elementos dinamicamente
-          const resenhaDiv = document.createElement('div');
-          resenhaDiv.classList.add('resenha-item');
-
-          resenhaDiv.innerHTML = `
-            <div class="resenha-header">
-              <img src="${resenhaData.resenhaByImg}" alt="User Image" class="userImg3">
-              <strong>${resenhaData.resenhaBy}</strong>
-              <span class="resenha-date">${new Date(resenhaData.resenhaAt).toLocaleString()}</span>
-            </div>
-            <p class="resenha-text">${resenhaData.resenha}</p>`;
-
-          resenhasContainer.appendChild(resenhaDiv);
           
+          
+          const resenhaData = childSnapshot.val(); // Obtém os dados da resenha
+          const resenhaSnapshot = snapshot.val()
+          const resenhaID = childSnapshot.key;
+          const DonoResenha = resenhaData.resenhaById
+          
+       
+          if(DonoResenha === user ||userId === '60ATcph6xShfJB7wfqFxBIGaZp32' ){
+            console.log("DonoResenha")
+            const resenhaDiv1 = document.createElement('div'); 
+            resenhaDiv1.classList.add('resenha-item');
+          
+            resenhaDiv1.innerHTML = `
+             <div class="resenhaDiv1">
+             <button class="close-btn" onclick="fecharPopup()">×</button>
+             <div class="resenha-header">
+                    
+                    <img src="${resenhaData.resenhaByImg}" alt="User Image" class="userImg4">
+                    <div>
+                      <strong>${resenhaData.resenhaBy} <span class="resenha-date"> ${new Date(resenhaData.resenhaAt).toLocaleString()} </span> 
+                          <button class="lixeira" onclick="removeResenha('${task.key}', '${resenhaID}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                          </svg>
+                          </button>
+                      </strong>
+                      
+                      <p class="resenha-text">${resenhaData.resenha}</p>
+                      </div>
+                      </div>
+                      <hr>
+                </div>`;
+            resenhaDiv.appendChild(resenhaDiv1)
+            resenhaPopup.appendChild(resenhaDiv)
+            resenhasContainer.appendChild(resenhaPopup)
 
+          }else{
+            console.log('nao é o dono da resenha')
+            const resenhaDiv1 = document.createElement('div'); 
+            resenhaDiv1.classList.add('resenha-item');
+          
+            resenhaDiv1.innerHTML = `
+             <div class="resenhaDiv1">
+             <button class="close-btn" onclick="fecharPopup()">×</button>
+             <div class="resenha-header">
+                    
+                    <img src="${resenhaData.resenhaByImg}" alt="User Image" class="userImg4">
+                    <div>
+                      <strong>${resenhaData.resenhaBy} <span class="resenha-date"> ${new Date(resenhaData.resenhaAt).toLocaleString()} </span>
+                      </strong>
+                      
+                      <p class="resenha-text">${resenhaData.resenha}</p>
+                      </div>
+                      </div>
+                      <hr>
+                </div>`;
+            resenhaDiv.appendChild(resenhaDiv1)
+            resenhaPopup.appendChild(resenhaDiv)
+            resenhasContainer.appendChild(resenhaPopup)
+
+          }
+
+
+          
         });
+        setTimeout(() => abrirPopup(), 100);
 
-        console.log('passou aqui');
-        const btnPostarResenha = document.createElement('button');
-        btnPostarResenha.textContent = 'Postar Resenha';
-        btnPostarResenha.setAttribute('class', 'btn-postar-resenha');
-        btnPostarResenha.addEventListener('click', () => {
-          sentResenha(task.key);
-        });
+        if(leu || userId === '60ATcph6xShfJB7wfqFxBIGaZp32'){
 
-        const resenhaForm = document.createElement('form')
-        resenhaForm.setAttribute('id', `resenhaForm/${task.key}`)
-        const TxtResenha = document.createElement('input')
-        TxtResenha.setAttribute('id', `TextResenha/${task.key}`)
-        resenhaForm.appendChild(TxtResenha)
-        card.appendChild(resenhaForm)
-        card.appendChild(btnPostarResenha);
+          const resenhaDiv1 = document.createElement('div'); 
+          resenhaDiv1.classList.add('resenha-item');
+          const divPutResenha =  document.createElement('div');
+  
+          const formId = `resenhaForm/${task.key}`;
+          const existingForm = document.getElementById(formId);
+          
+          if (!existingForm) {
+              const btnPostarResenha = document.createElement('button');
+              btnPostarResenha.textContent = 'Postar Resenha';
+              btnPostarResenha.setAttribute('class', 'btn-postar-resenha');
+              btnPostarResenha.addEventListener('click', () => {
+                  sentResenha(task.key);
+              });
+          
+              const resenhaForm = document.createElement('form');
+              resenhaForm.setAttribute('id', formId);
+              resenhaForm.setAttribute('action', `sentResenha(${task.key})`)
+              const TxtResenha = document.createElement('textarea');
+              TxtResenha.setAttribute('id', `TextResenha/${task.key}`);
+              TxtResenha.setAttribute('class', 'inputResenha');
+              
+              resenhaForm.appendChild(TxtResenha);
+              divFormResenha.appendChild(resenhaForm);
+              divFormResenha.appendChild(btnPostarResenha);
+              divPutResenha.appendChild(divFormResenha)
+              resenhaDiv.appendChild(divPutResenha);
+              resenhaPopup.appendChild(resenhaDiv)
+              resenhasContainer.appendChild(resenhaPopup)
+          }
+        }else{
+          const resenhaDiv1 = document.createElement('div'); 
+          resenhaDiv1.classList.add('resenha-item');
+  
+          resenhaDiv1.innerHTML = `
+          <div class="resenhaDiv1">
+          <button class="close-btn" onclick="fecharPopup()">×</button>
+          <div class="resenha-header">
+                
+          <img src="img/dummy-geschichte.jpg" class="userImg4"></img>
+                 <div>
+                    <h2>
+                        Que tal esta diversão?
+                    </h2>
+                    <p> Mergulhe na leitura e depois conte para gente o que achou!  </p>
+                 </div>
+               </div>
+             </div>`;
+             resenhaDiv.appendChild(resenhaDiv1)
+             
+         resenhaPopup.appendChild(resenhaDiv)
+         resenhasContainer.appendChild(resenhaPopup)
+        }
+        
 
       } else {
-        console.log('passou aqui');
-        const btnPostarResenha = document.createElement('button');
-        btnPostarResenha.textContent = 'Postar Resenha';
-        btnPostarResenha.setAttribute('class', 'btn-postar-resenha');
-        btnPostarResenha.addEventListener('click', () => {
-          sentResenha(task.key);
-        });
+        console.log('nao tem resenhas');
 
-        const resenhaForm = document.createElement('form')
-        resenhaForm.setAttribute('id', `resenhaForm/${task.key}`)
-        const TxtResenha = document.createElement('input')
-        TxtResenha.setAttribute('id', `TextResenha/${task.key}`)
-        resenhaForm.appendChild(TxtResenha)
-        card.appendChild(resenhaForm)
-        card.appendChild(btnPostarResenha);
+        const resenhaDiv1 = document.createElement('div'); 
+        resenhaDiv1.classList.add('resenha-item');
+
+        resenhaDiv1.innerHTML = `
+        <div class="resenhaDiv1">
+        <button class="close-btn" onclick="fecharPopup()">×</button>
+        <div class="resenha-header">
+              <img src="img/dummy-geschichte.jpg" class="userImg4"></img>
+               <div>
+               <h1>
+                   Que tal esta diversão?
+               </h1>
+                  <h2>
+                      seja o primeiro a postar uma resenha! 
+                       mergulhe no mundo da leitura e depois conte para a gente o que achou!  
+                      </h2>
+               </div>
+             </div>
+           </div>`;
+           resenhaDiv.appendChild(resenhaDiv1)
+           
+       resenhaPopup.appendChild(resenhaDiv)
+       resenhasContainer.appendChild(resenhaPopup)
 
 
-        resenhasContainer.innerHTML = `<p>Sem resenhas disponíveis.</p>`;
+       if(leu || userId === '60ATcph6xShfJB7wfqFxBIGaZp32'){
+
+        const resenhaDiv1 = document.createElement('div'); 
+        resenhaDiv1.classList.add('resenha-item');
+        const divPutResenha =  document.createElement('div');
+
+        const formId = `resenhaForm/${task.key}`;
+        const existingForm = document.getElementById(formId);
+        
+        if (!existingForm) {
+            const btnPostarResenha = document.createElement('button');
+            btnPostarResenha.textContent = 'Postar Resenha';
+            btnPostarResenha.setAttribute('class', 'btn-postar-resenha');
+            btnPostarResenha.addEventListener('click', () => {
+                sentResenha(task.key);
+            });
+        
+            const resenhaForm = document.createElement('form');
+            resenhaForm.setAttribute('id', formId);
+            resenhaForm.setAttribute('action', `sentResenha(${task.key})`)
+            const TxtResenha = document.createElement('textarea');
+            TxtResenha.setAttribute('id', `TextResenha/${task.key}`);
+            TxtResenha.setAttribute('class', 'inputResenha');
+            
+            resenhaForm.appendChild(TxtResenha);
+            divFormResenha.appendChild(resenhaForm);
+            divFormResenha.appendChild(btnPostarResenha);
+            divPutResenha.appendChild(divFormResenha)
+            resenhaDiv.appendChild(divPutResenha);
+            resenhaPopup.appendChild(resenhaDiv)
+            resenhasContainer.appendChild(resenhaPopup)
+        }
+      }else{
+        const resenhaDiv1 = document.createElement('div'); 
+        resenhaDiv1.classList.add('resenha-item');
+
+        resenhaDiv1.innerHTML = `
+        <div class="resenhaDiv1">
+        <button class="close-btn" onclick="fecharPopup()">×</button>
+        <div class="resenha-header">
+              
+               <div>
+
+               </div>
+             </div>
+           </div>`;
+           resenhaDiv.appendChild(resenhaDiv1)
+           
+       resenhaPopup.appendChild(resenhaDiv)
+       resenhasContainer.appendChild(resenhaPopup)
+      }
+        
       }    
+      setTimeout(() => abrirPopup(), 100);
 
     })
     .catch(error => {
@@ -452,8 +574,9 @@ btnMostrarResenhas.addEventListener('click', () => {
         console.error(`Erro ao carregar a imagem: ${realImgUrl}`);
       };
       imgLoader.src = realImgUrl; // Inicia o carregamento da imagem real
-
-      card.appendChild(imgLi);
+      
+      
+      btnMostrarResenhas.appendChild(imgLi);
       // Adiciona o nome do livro
       const title = document.createElement('h3');
       title.textContent = task.name || 'Sem Título';
@@ -593,6 +716,11 @@ function updatePaginationControls(totalItems, tasks) {
 }
 
 // Exemplo de carregamento inicial
+
+
+
+
+
 // exibe os destaques
 
 function fetchAndFillHighlights() {
@@ -768,120 +896,30 @@ sortedDonors.forEach(([donor, { count, photo }]) => {
   console.log("Destaques preenchidos com sucesso.");
 }
 
+function hasRead(taskKey, userId) {
+  return dbRefUsers.child(`tasks/${taskKey}/rentalHistory`).once('value')
+    .then(snapshot => {
+      if (snapshot.exists() && snapshot.hasChildren()) {
+        // Percorre cada entrada do rentalHistory e coleta os rentedById
+        const leitores = [];
+        snapshot.forEach(childSnapshot => {
+          const rentedById = childSnapshot.val().rentedById;
+          if (rentedById) {
+            leitores.push(rentedById);
+          }
+        });
+        return leitores.includes(userId); // Verifica se o userId está na lista
+      } else {
+        console.log("Não possui um histórico de leitores");
+        return false;
+      }
+    })
+    .catch(error => {
+      console.error("Erro ao buscar leitores:", error);
+      return false;
+    });
+}
 
-
-
-
-
-
-// // remade by gpt
-// function fillTodoList(tasks) {
-//   // Limpar a lista de tarefas
-//   ulTodoList.innerHTML = '';
-//   let num = 0;
-
-//   // Verifica se tasks é um array válido
-//   if (Array.isArray(tasks) && tasks.length > 0) {
-//     tasks.forEach(function (task) {
-//       // Criação do contêiner do card
-//       var card = document.createElement('div');
-//       card.setAttribute('class', 'todo-card');
-//       card.setAttribute('id', task.key); // Adiciona um ID único ao card
-
-//       // Imagem do livro
-//       var imgLi = document.createElement('img');
-//       imgLi.src = task.imgUrl; 
-//       imgLi.setAttribute('class', 'imgTodo');
-//       imgLi.setAttribute('id', `img-${task.key}`);
-//       card.appendChild(imgLi);
-
-//       // Nome do livro
-//       var title = document.createElement('h3');
-//       title.textContent = task.name || 'Sem Título';
-//       card.appendChild(title);
-
-//       // Gênero do livro
-//       var genre = document.createElement('p');
-//       genre.textContent = 'Gênero: ' + (task.Genero );
-//       card.appendChild(genre);
-
-//       // Informações do doador
-//       var donorInfo = document.createElement('div');
-//       donorInfo.setAttribute('class', 'donor-info');
-
-//       // Nome do doador
-//       var donorName = document.createElement('p');
-//       donorName.textContent = 'Doado por: ' + (task.userNameDoador);
-//       donorInfo.appendChild(donorName);
-
-//       card.appendChild(donorInfo);
-//       //disnponibiliza os botoes de edição somente para mim
-//       const userId = firebase.auth().currentUser.uid;
-//       if (userId === '60ATcph6xShfJB7wfqFxBIGaZp32') {
-//           const actions = document.createElement('div');
-//           actions.setAttribute('class', 'actions');
-
-//           // Botão de excluir
-//           const removeBtn = document.createElement('button');
-//           removeBtn.textContent = 'Excluir';
-//           removeBtn.setAttribute('onclick', `removeTodo("${task.key}")`);
-//           removeBtn.setAttribute('class', 'danger');
-//           actions.appendChild(removeBtn);
-
-//           // Botão de editar
-//           const updateBtn = document.createElement('button');
-//           updateBtn.textContent = 'Editar';
-//           updateBtn.setAttribute('onclick', `updateTodo("${task.key}")`);
-//           updateBtn.setAttribute('class', 'alternative');
-//           actions.appendChild(updateBtn);
-
-//           card.appendChild(actions);
-//       }
-
-
-          
-//             // Verifica se o livro está alugado
-//             dbRefUsers.child(`tasks/${task.key}/currentRental`).once('value')
-//                 .then(snapshot => {
-//                     const rental = snapshot.val();
-//                     const userId = firebase.auth().currentUser.uid; // Obtém o ID do usuário atual
-
-//                     if (rental) {
-//                         // Mostra quem está alugando
-//                         const rentedBy = document.createElement('p');
-//                         rentedBy.textContent = `Alugado no momento por: ${rental.rentedBy}`;
-//                         card.appendChild(rentedBy); // Exibe diretamente no card
-
-//                         // Se o usuário atual alugou o livro, mostra o botão de devolver
-//                         if (rental.rentedById === userId) {
-//                             const returnBtn = document.createElement('button');
-//                             returnBtn.textContent = 'Devolver';
-//                             returnBtn.setAttribute('onclick', `returnBook("${task.key}")`);
-//                             returnBtn.setAttribute('class', 'return');
-//                             card.appendChild(returnBtn); // Exibe o botão de devolver diretamente no card
-//                         }
-//                     } else {
-//                         // Se não estiver alugado, mostra o botão de alugar
-//                         const rentBtn = document.createElement('button');
-//                         rentBtn.textContent = 'Alugar';
-//                         rentBtn.setAttribute('onclick', `rentBook("${task.key}", "${task.name}")`);
-//                         rentBtn.setAttribute('class', 'rent');
-//                         card.appendChild(rentBtn); // Exibe o botão de alugar diretamente no card
-//                     }
-//                 })
-//                 .catch(error => {
-//                     console.error('Erro ao verificar o status de aluguel:', error);
-//                 });
-
-//             ulTodoList.appendChild(card);
-//             num++;
-//         });
-
-//     todoCount.innerHTML = `${num} ${num > 1 ? 'Livros' : 'Livro'}:`;
-//   } else {
-//     todoCount.innerHTML = 'Nenhum livro disponível.';
-//   }
-// }
 
 
 // historico de leitura do usuario
@@ -894,7 +932,7 @@ function HistoricoDeLeitura(){
     .once('value')
     .then((snapshot) =>{
       const allBooks = snapshot.val()
-      const filteredBooks = []
+      const filteredBooks = []//array que vai armazenar os livros filtrados
 
       for (const key in allBooks) {
         const book = allBooks[key];
@@ -1173,116 +1211,6 @@ function MyDonateBooks() {
     });
 }
 
-
-
-
-// se der errado eu volto para esssa
-// function fillTodoList2(tasks) {
-//   ulTodoList.innerHTML = '';
-//   let num = 0;
-
-//   // Verifica se tasks é um array válido
-//   if (Array.isArray(tasks) && tasks.length > 0) {
-//     tasks.forEach(function (task) {
-//       var li = document.createElement('li');
-//       li.setAttribute('id', task.key); // Adiciona um ID único ao <li>
-//       li.setAttribute('class', 'listaLivros');
-
-//       // Imagem do livro
-//       var imgLi = document.createElement('img');
-//       imgLi.src = task.imgUrl || 'img/defaultTodo.png'; // Usa a imagem padrão se não houver imgUrl
-//       imgLi.setAttribute('class', 'imgTodo');
-//       imgLi.setAttribute('id', `img-${task.key}`); // Adiciona um ID único à imagem
-//       li.appendChild(imgLi);
-
-//       // Título do livro
-//       var spanTitulo = document.createElement('p');
-//       spanTitulo.appendChild(document.createTextNode('Título:'));
-//       li.appendChild(spanTitulo);
-
-//       var spanLi = document.createElement('span');
-//       spanLi.appendChild(document.createTextNode(task.name || 'Sem Título')); // Usa 'Sem Título' se não houver nome
-//       li.appendChild(spanLi);
-
-//       // Gênero do livro
-//       var spanGenero = document.createElement('p');
-//       spanGenero.appendChild(document.createTextNode('Gênero: ' + (task.Genero || 'Não especificado'))); // Usa 'Não especificado' se não houver gênero
-//       li.appendChild(spanGenero);
-
-//       // Nome do doador
-//       var spanDoador = document.createElement('p');
-//       spanDoador.appendChild(document.createTextNode('Doador: ' + (task.userName || 'Desconhecido'))); // Usa 'Desconhecido' se não houver nome do doador
-//       li.appendChild(spanDoador);
-
-//       // Email do doador
-//       var spanEmail = document.createElement('p');
-//       spanEmail.appendChild(document.createTextNode('Email: ' + (task.emailEditor || 'Não disponível'))); // Usa 'Não disponível' se não houver email
-//       li.appendChild(spanEmail);
-
-
-
-//       // Botão de excluir
-//       var liRemoveBtn = document.createElement('button');
-//       liRemoveBtn.appendChild(document.createTextNode('Excluir'));
-//       liRemoveBtn.setAttribute('onclick', `removeTodo("${task.key}")`);
-//       liRemoveBtn.setAttribute('class', 'danger todoBtn');
-//       li.appendChild(liRemoveBtn);
-
-//       // Botão de editar
-//       var liUpdateBtn = document.createElement('button');
-//       liUpdateBtn.appendChild(document.createTextNode('Editar'));
-//       liUpdateBtn.setAttribute('onclick', `updateTodo("${task.key}")`);
-//       liUpdateBtn.setAttribute('class', 'alternative todoBtn');
-//       li.appendChild(liUpdateBtn);
-
-//       ulTodoList.appendChild(li);
-//       num++;
-//     });
-
-//     todoCount.innerHTML = `${num} ${num > 1 ? 'Livros' : 'Livro'}:`;
-//   } else {
-//     todoCount.innerHTML = 'Nenhum livro disponível.';
-//   }
-// }
-
-
-
- 
-  
-
-// 
-// fim da versao gpt
-// 
-// 
-
-// exibe a lista de tarefa do usuario autenticado
-
-// function fillTodoList(dataSnapshot){
-//     ulTodoList.innerHTML =''
-//     var num = dataSnapshot.numChildren()
-//     todoCount.innerHTML = num + (num > 1 ? 'tarefas' : 'tarefa') + ':'
-//     dataSnapshot.forEach(function(item){
-//         var value = item.val()
-//         var li = document.createElement('li')
-//         var spanLi = document.createElement('span')
-//         spanLi.appendChild(document.createTextNode(value.name))
-//         li.appendChild(spanLi)
-//         ulTodoList.appendChild(li)
-
-// var liRemoveBtn = document.createElement('button')
-// liRemoveBtn.appendChild(document.createTextNode('excluir'))
-// liRemoveBtn.setAttribute('onclick','removeTodo(\"'+item.key+'\")')
-// liRemoveBtn.setAttribute('class', 'danger todoBtn')
-// li.appendChild(liRemoveBtn)
-
-// var liUpdateBtn = document.createElement('button')
-// liUpdateBtn.appendChild(document.createTextNode('editar'))
-// liUpdateBtn.setAttribute('onclick', 'updateTodo(\"'+item.key+'\")')
-// liUpdateBtn.setAttribute('class', 'alternative todoBtn')
-// li.appendChild(liUpdateBtn)
-//     })
-// }
-
 // função para indicar livro 
 function indexBook(key, name ){
   const userId = firebase.auth().currentUser.uid;
@@ -1428,46 +1356,9 @@ function unindexBook(key) {
   });
 }
 
-// // função para mostrar as resenhas
-// function showResenha(key, name) {
-//   const resenhasContainer = document.getElementById('resenhasContainer');
-//   resenhasContainer.innerHTML = ''; // Limpa o conteúdo antes de carregar novas resenhas
-//   showItem(formResenha)
-//   dbRefUsers.child(`tasks/${key}/resenhas`).once('value')
-//     .then(snapshot => {
-//       if (snapshot.exists()) {
-//         snapshot.forEach(childSnapshot => {
-//           const resenhaData = childSnapshot.val();
-
-//           // Criando elementos dinamicamente
-//           const resenhaDiv = document.createElement('div');
-//           resenhaDiv.classList.add('resenha-item');
-
-//           resenhaDiv.innerHTML = `
-//             <div class="resenha-header">
-//               <img src="${resenhaData.resenhaByImg}" alt="User Image" class="resenha-avatar">
-//               <strong>${resenhaData.resenhaBy}</strong>
-//               <span class="resenha-date">${new Date(resenhaData.resenhaAt).toLocaleString()}</span>
-//             </div>
-//             <p class="resenha-text">${resenhaData.resenha}</p>`;
-//           resenhasContainer.appendChild(resenhaDiv);
-//         });
-//       } else {
-//         resenhasContainer.innerHTML = `<p>Sem resenhas disponíveis.</p>`;
-//       }
-//     })
-//     .catch(error => {
-//       console.error('Erro ao carregar resenhas:', error);
-//     });
-    
-// }
-
-
-
-
 
 // função para publicar resenha
-function sentResenha(key, name) {
+function sentResenha(key) {
   const user = firebase.auth().currentUser;
   const userId = user.uid;
 
@@ -1494,6 +1385,48 @@ function sentResenha(key, name) {
     .catch(error => {
       console.error('Erro ao postar a resenha:', error);
     });
+}
+
+
+// Função para remover uma resenha
+function removeResenha(taskKey, resenhaKey) {
+  const user = firebase.auth().currentUser;
+  const userId = user.uid;
+  const dbRefUsers = firebase.database().ref('users');
+  console.log("taskKey:", taskKey);
+console.log("resenhaKey:", resenhaKey);
+  // Obtém a resenha específica
+  dbRefUsers.child(`tasks/${taskKey}/resenhas/${resenhaKey}`).once('value')
+    .then(snapshot => {
+      const resenhaData = snapshot.val();
+      console.log("resenhaData:", resenhaData);
+      if (!resenhaData) {
+        console.error("Resenha não encontrada ou o caminho está incorreto.");
+        alert("Resenha não encontrada.");
+        return;
+      }
+
+      // Verifica se o usuário é o autor da resenha ou um administrador
+      if (resenhaData.resenhaById === userId || userId === '60ATcph6xShfJB7wfqFxBIGaZp32') {
+        dbRefUsers.child(`tasks/${taskKey}/resenhas/${resenhaKey}`).remove()
+          .then(() => {
+            alert("Resenha removida com sucesso.");
+          })
+          .catch(error => {
+            console.error("Erro ao remover resenha:", error);
+          });
+      } else {
+        alert("Você não tem permissão para remover esta resenha.");
+      }
+    })
+    .catch(error => {
+      console.error("Erro ao buscar resenha:", error);
+    });
+}
+
+function qualquercoisa(buttonElement) {
+  const resenhaData = JSON.parse(buttonElement.getAttribute('data-resenha'));
+  console.log(resenhaData);
 }
 
 

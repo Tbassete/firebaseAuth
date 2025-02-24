@@ -113,10 +113,18 @@
     }
   
     .imgTodo {
-      width: 80%;
-      height: 70%;
+      width: 90%;
+      height: 90%;
     }
-
+    .btnMostrarResenhas{
+      background-color: transparent;
+      width: 90%;
+      height: 90%;
+    }
+    
+    .btnMostrarResenhas:hover{
+      background-color: transparent;
+    }
     #FiltroGeneros{
         display: flex;
         justify-content: center;
