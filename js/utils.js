@@ -194,11 +194,10 @@ function showAuth(){
   hideItem(userContent)
   showItem(auth)
 }
+
 // cebtralizar e traduzir erros 
 function showError(prefix, error) {
-
-
-
+  
   console.log(error.code);
   hideItem(loading);
 
